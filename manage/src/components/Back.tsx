@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { scroller } from 'react-scroll';
 import styled from 'styled-components';
-import { Space, Typography, Dropdown, Menu, MenuProps } from 'antd';
+import { Typography, Dropdown, Menu, MenuProps } from 'antd';
 import { LeftOutlined, MenuOutlined } from '@ant-design/icons';
 
 // hooks

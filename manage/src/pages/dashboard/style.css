@@ -1,0 +1,133 @@
+.ant-card-body {
+  margin: 12px;
+}
+
+.tootip-img {
+  width: 22px;
+  border-radius: 25px;
+}
+
+.ant-card {
+  border-radius: 15px;
+}
+
+.ant-row {
+  margin-left: -12px;
+  margin-right: -12px;
+}
+
+.bnb2 {
+  color: #52c41a;
+  font-weight: 700;
+}
+
+.redtext {
+  color: red;
+}
+
+.bar-chart {
+  background: transparent linear-gradient(62deg, #00369e 0%, #005cfd 53%, #a18dff 100%) 0% 0% no-repeat padding-box;
+  box-shadow: 0px 4px 6px #0000001f;
+
+  border-radius: 8px;
+}
+
+.linechart h5 {
+  font-weight: 700;
+  margin: 0px;
+}
+
+.linechart {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.project-ant h4 {
+  margin: 0px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #141414;
+}
+
+.project-ant h5 {
+  margin: 0px;
+  color: #141414;
+  font-weight: 700;
+}
+
+.project-ant {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ant-list-box th {
+  text-align: left;
+  border-bottom: 1px solid #0000000d;
+  padding: 8px 0px;
+  color: #8c8c8c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ant-list-box td {
+  text-align: left;
+  border-bottom: 1px solid #0000000d;
+  padding: 16px 25px;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ant-list-box table tr:hover td {
+  background: #fafafa;
+}
+
+.ant-list-box table tr:hover td {
+  background: #fafafa;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.ant-card-body {
+  padding: 16px;
+}
+
+.cardbody .ant-card-body {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+h6 {
+  font-size: 16px;
+  white-space: nowrap;
+  width: 520px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chart-vistior {
+  margin-top: 31px;
+}
+
+.chart-vistior h5 {
+  margin: 0px;
+  font-weight: 700;
+}
+
+.ant-typography .lastweek {
+  color: #8c8c8c;
+  font-weight: 600;
+}
+
+img {
+  width: 50px;
+  margin-right: 30px;
+}
+
+.table-responsive {
+  margin-bottom: 20px;
+}
