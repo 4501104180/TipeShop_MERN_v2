@@ -13,6 +13,7 @@ import {
 import type { Resources, Resource, Permission } from '../models';
 // redux
 import { getAccountsAction } from '../redux/actions/account';
+import { getCategoriesAction } from '../redux/actions/product';
 // routes
 import { PATH_DASHBOARD } from '../routes/path';
 // utils
@@ -103,6 +104,7 @@ export const generateResources = (resources: Resource[]): ResourceConfig[] => {
           locked: root.products.children?.find((e) => e._id === 'categories')!.locked,
           key: PATH_DASHBOARD.products.categories,
           label: root.products.children?.find((e) => e._id === 'categories')!.name,
+          fetching: getCategoriesAction({}),
         }) ||
           null,
       ],

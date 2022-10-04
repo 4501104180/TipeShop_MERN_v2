@@ -18,3 +18,7 @@ export const updateAccountValidation = yup.object().shape({
     .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/, 'Invalid phone number!'),
   name: yup.string().required('Name is required!'),
 });
+
+export const createCategoryValidation = yup.object().shape({
+  name: yup.string().required('Name is required!'),
+});

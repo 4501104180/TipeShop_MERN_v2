@@ -24,6 +24,10 @@ html {
     width: 100%;
 }
 
+.ant-space.ant-space-children-full-width > .ant-space-item {
+    width: 100%;
+}
+
 .ant-image {
     width: 100%;
     height: 100%;
