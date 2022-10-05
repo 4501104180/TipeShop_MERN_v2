@@ -33,7 +33,8 @@ class DashboardAPI {
 			var totalSale = sales.reduce(function (_this, val) {
 				return _this + val.value;
 			}, 0);
-			let number = parseInt(5);
+			let type = 'sold';
+			let number = parseInt('5');
 			const GRAVITY = 1.8;
 			const products = await Product.aggregate([
 				{
@@ -51,15 +52,21 @@ class DashboardAPI {
 						name: 1,
 						images: 1,
 						slug: 1,
+						quantity: 1,
 						quantity_sold: 1,
 						score: {
 							$divide: [
-								'$quantity_sold.value',
+								type === 'sold' ? '$quantity_sold.value' : type === 'favorite' ? '$favorite_count' : '$view_count',
 								{
 									$pow: [{ $add: ['$time_elapsed', 2] }, GRAVITY],
 								},
 							],
 						},
+					},
+				},
+				{
+					$sort: {
+						score: -1,
 					},
 				},
 				{
@@ -113,7 +120,7 @@ class DashboardAPI {
 			res.status(200).json({
 				totalProduct,
 				totalProductAvailabel,
-				message: 'success',
+				msg: 'success',
 			});
 		} catch (error) {
 			console.error(error);
@@ -126,7 +133,7 @@ class DashboardAPI {
 			const totalOrder = await Order.count({});
 			res.status(200).json({
 				totalOrder,
-				message: 'success',
+				msg: 'success',
 			});
 		} catch (error) {
 			console.error(error);
@@ -139,7 +146,7 @@ class DashboardAPI {
 			const totalUser = await Account.count({});
 			res.status(200).json({
 				totalUser,
-				message: 'success',
+				msg: 'success',
 			});
 		} catch (error) {
 			console.error(error);
@@ -149,7 +156,8 @@ class DashboardAPI {
 	// [GET] /trend[sold]
 	async trend(req, res, next) {
 		try {
-			let number = parseInt(5);
+			let type = 'sold';
+			let number = parseInt('5');
 			const GRAVITY = 1.8;
 			const products = await Product.aggregate([
 				{
@@ -167,10 +175,11 @@ class DashboardAPI {
 						name: 1,
 						images: 1,
 						slug: 1,
+						quantity: 1,
 						quantity_sold: 1,
 						score: {
 							$divide: [
-								'$quantity_sold.value',
+								type === 'sold' ? '$quantity_sold.value' : type === 'favorite' ? '$favorite_count' : '$view_count',
 								{
 									$pow: [{ $add: ['$time_elapsed', 2] }, GRAVITY],
 								},
@@ -179,12 +188,17 @@ class DashboardAPI {
 					},
 				},
 				{
+					$sort: {
+						score: -1,
+					},
+				},
+				{
 					$limit: number,
 				},
 			]);
 			res.status(200).json({
 				products,
-				message: 'success',
+				msg: 'success',
 			});
 		} catch (error) {
 			console.error(error);
@@ -219,7 +233,7 @@ class DashboardAPI {
 			res.status(200).json({
 				totalSales,
 				sum,
-				message: 'success',
+				msg: 'success',
 			});
 		} catch (error) {
 			console.error(error);
@@ -239,7 +253,7 @@ class DashboardAPI {
 
 			res.status(200).json({
 				history,
-				message: 'success',
+				msg: 'success',
 			});
 		} catch (error) {
 			console.error(error);
@@ -255,7 +269,7 @@ class DashboardAPI {
 			const graph = await Order.find(filter).select(['tracking_infor', 'price_summary', 'updatedAt']);
 			res.status(200).json({
 				graph,
-				message: 'success',
+				msg: 'success',
 			});
 		} catch (error) {
 			console.error(error);

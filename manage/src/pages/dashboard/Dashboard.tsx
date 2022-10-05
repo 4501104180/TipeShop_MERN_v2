@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Card, Col, Row, Typography, Progress, Button, Timeline, Image, Skeleton } from 'antd';
+import { Card, Col, Row, Typography, Progress, Button, Timeline, Skeleton } from 'antd';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import {
   DollarTwoTone,
@@ -15,15 +15,10 @@ import type { DashboardAllResponse } from '../../apis/dashboardApi';
 import dashboardApi from '../../apis/dashboardApi';
 // utils
 import { toVND } from '../../utils/formatMoney';
+import { distinguishImage } from '../../utils/formatImage';
 // graph
 import Echart from './chart/EChart';
 import LineChart from './chart/LineChart';
-
-import ava1 from './image/iphone.jpg';
-import ava2 from './image/logo-shopify.svg';
-import ava3 from './image/logo-shopify.svg';
-import ava4 from './image/logo-shopify.svg';
-import ava5 from './image/logo-shopify.svg';
 
 import './style.css';
 
@@ -40,77 +35,36 @@ const Dashboard = () => {
     };
     getDashboard();
   }, []);
-
-  const dollar = [<DollarTwoTone style={{ fontSize: '22px', color: '#08c' }} />];
-  const profile = [<IdcardTwoTone style={{ fontSize: '22px', color: '#08c' }} />];
-  const heart = [<HeartTwoTone style={{ fontSize: '22px', color: '#08c' }} />];
-  const cart = [<ShoppingTwoTone style={{ fontSize: '22px', color: '#08c' }} />];
   const count = [
     {
       today: 'Gross revenues',
       title: toVND(dashboard?.statistic.totalSale || 0),
       persent: '+30%',
-      icon: dollar,
+      icon: <DollarTwoTone style={{ fontSize: '22px', color: '#08c' }} />,
       bnb: 'bnb2',
     },
     {
       today: 'Shopping basket',
       title: dashboard?.statistic.totalOrder || 0,
       persent: '10%',
-      icon: cart,
+      icon: <ShoppingTwoTone style={{ fontSize: '22px', color: '#08c' }} />,
       bnb: 'bnb2',
     },
     {
       today: 'Users',
       title: dashboard?.statistic.totalUser || 0,
       persent: '+20%',
-      icon: profile,
+      icon: <IdcardTwoTone style={{ fontSize: '22px', color: '#08c' }} />,
       bnb: 'bnb2',
     },
     {
       today: 'All of products',
       title: dashboard?.statistic.totalProduct || 0,
       persent: '-20%',
-      icon: heart,
+      icon: <HeartTwoTone style={{ fontSize: '22px', color: '#08c' }} />,
       bnb: 'redtext',
     },
   ];
-
-  const list = [
-    {
-      img: ava1,
-      Title: 'Điện Thoại iPhone 13 Pro Max 512GB - Apple GPU (4-core graphics)',
-      bud: '$126,000',
-      progress: <Progress percent={60} size="small" />,
-    },
-    {
-      img: ava2,
-      Title:
-        'Máy Tính Bảng Samsung Galaxy Tab S7 FE LTE T735 (4GB/64GB) - Apple GPU (4-core graphics)',
-      bud: '$3,000',
-      progress: <Progress percent={10} size="small" />,
-    },
-    {
-      img: ava3,
-      Title: 'Điện thoại Samsung Galaxy M51 - Apple GPU (4-core graphics)',
-      bud: 'Not Set',
-      progress: <Progress percent={100} size="small" status="active" />,
-    },
-    {
-      img: ava4,
-      Title: 'Ram Desktop Kingston Fury Beast (KF436C17BBK2/16) 16GB ',
-      bud: '$4,000',
-      progress: <Progress percent={80} size="small" />,
-    },
-
-    {
-      img: ava5,
-      Title: 'Máy tính laptop Surface Pro 7 Core I3 Ram 4Gb ',
-      bud: '$2,000',
-      progress: <Progress percent={100} size="small" status="exception" format={() => 'Cancel'} />,
-    },
-  ];
-
   const timelineList = [
     {
       title: '$2,400 - Redesign store',
@@ -140,6 +94,8 @@ const Dashboard = () => {
       color: 'gray',
     },
   ];
+  if (!dashboard) {
+  }
   return (
     <div className="layout-content">
       {/* Total  */}
@@ -178,16 +134,14 @@ const Dashboard = () => {
           </Card>
         </Col>
       </Row>
-      {/* Trending Products */}
       <Row gutter={[24, 0]}>
+        {/* Trending Products */}
         <Col xs={24} sm={24} md={12} lg={12} xl={16} className="mb-24">
           <Card bordered={false} className="criclebox cardbody h-full">
             <div className="project-ant">
               <div>
                 <Title level={5}>Trending Products</Title>
-                <Paragraph className="lastweek">
-                  done this month <span className="bnb2">40%</span>
-                </Paragraph>
+                <Paragraph className="lastweek"></Paragraph>
               </div>
             </div>
             <div className="ant-list-box table-responsive">
@@ -199,48 +153,37 @@ const Dashboard = () => {
                     <th>COMPLETION</th>
                   </tr>
                 </thead>
-                {/* <tbody>
-                  {list.map((d, index) => (
-                    <tr key={index}>
-                      <td>
-                        <h6>
-                          <img src={d.img} alt="" className="avatar-sm mr-10" /> {d.Title}
-                        </h6>
-                      </td>
-                      <td>
-                        <span className="text-xs font-weight-bold">{d.bud} </span>
-                      </td>
-                      <td>
-                        <div className="percent-progress">{d.progress}</div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody> */}
                 <tbody>
-                  {dashboard?.products.map((d, index) => (
-                    <tr key={index}>
-                      <td>
-                        <h6>
-                          {/* <img src={d.images} alt="" className="avatar-sm mr-10" />  */}
-                          {/* <Image
-                            src={}
-                            onError={({ currentTarget }) => {
-                              currentTarget.onerror = null; // prevents looping
-                              currentTarget.src = `${appConfig.public_image_url}/avatar.png`;
-                            }}
-                            style={{ width: '100%', height: '100%' }}
-                          /> */}
-                          {d.name}
-                        </h6>
-                      </td>
-                      {/* <td>
-                        <span className="text-xs font-weight-bold">{d.bud} </span>
-                      </td>
-                      <td>
-                        <div className="percent-progress">{d.progress}</div>
-                      </td> */}
-                    </tr>
-                  ))}
+                  {dashboard?.products.map((product, index) => {
+                    const firstIndex: number = 0;
+                    const { images, quantity, quantity_sold } = product;
+                    return (
+                      <>
+                        <tr key={index}>
+                          <td>
+                            <h6>
+                              <img src={distinguishImage(images[firstIndex])} alt="" />
+                              {product.name}
+                            </h6>
+                          </td>
+                          <td>
+                            <span className="text-xs font-weight-bold">
+                              {product.quantity_sold.value}{' '}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="percent-progress">
+                              <Progress
+                                percent={Math.round(
+                                  (quantity_sold.value / (quantity + quantity_sold.value)) * 100
+                                )}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      </>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -251,15 +194,18 @@ const Dashboard = () => {
           <Card bordered={false} className="criclebox h-full">
             <div className="timeline-box">
               <Title level={5}>Orders History</Title>
-              <Paragraph className="lastweek" style={{ marginBottom: 24 }}>
-                this month <span className="bnb2">20%</span>
-              </Paragraph>
-
+              <Paragraph className="lastweek" style={{ marginBottom: 24 }}></Paragraph>
               <Timeline pending="Recording..." className="timelinelist" reverse={reverse}>
-                {timelineList.map((t, index) => (
+                {/* {timelineList.map((t, index) => (
                   <Timeline.Item color={t.color} key={index}>
                     <Title level={5}>{t.title}</Title>
                     <Text>{t.time}</Text>
+                  </Timeline.Item>
+                ))} */}
+                {dashboard?.history.map((history, index) => (
+                  <Timeline.Item color={'gray'} key={index}>
+                    <Title level={5}>{history.status_text}</Title>
+                    <Text>{history.time}</Text>
                   </Timeline.Item>
                 ))}
               </Timeline>

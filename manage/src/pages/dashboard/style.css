@@ -120,7 +120,7 @@ h6 {
 
 .ant-typography .lastweek {
   color: #8c8c8c;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 img {
@@ -130,4 +130,15 @@ img {
 
 .table-responsive {
   margin-bottom: 20px;
+}
+
+.chart-visitor-count {
+  padding: 7px;
+}
+
+.timeline-box {
+  height: 550px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

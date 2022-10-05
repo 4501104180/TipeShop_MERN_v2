@@ -20,6 +20,7 @@ interface Products {
   _id: string;
   name: string;
   images: [];
+  quantity: number;
   quantity_sold: { text: string; value: number };
   slug: string;
   score: number;

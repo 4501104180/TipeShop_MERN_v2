@@ -10,27 +10,24 @@
   * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import ReactApexChart from "react-apexcharts";
-import { Typography } from "antd";
-import { MinusOutlined } from "@ant-design/icons";
-import lineChart from "./configs/lineChart";
+import ReactApexChart from 'react-apexcharts';
+import { Typography } from 'antd';
+import { MinusOutlined } from '@ant-design/icons';
+import lineChart from './configs/lineChart';
 
 function LineChart() {
-  const { Title, Paragraph } = Typography;
- 
+  const { Title } = Typography;
+
   return (
     <>
       <div className="linechart">
         <div>
           <Title level={5}>Revenue Line Graph</Title>
-          <Paragraph className="lastweek">
-            than last week <span className="bnb2">+30%</span> 
-          </Paragraph>
         </div>
         <div className="sales">
           <ul>
-            <li>{<MinusOutlined style={{ fontSize: '16px', color: '#00E396' }}/>} Traffic</li>
-            <li>{<MinusOutlined style={{ fontSize: '16px', color: '#08c' }}/>} Sales</li>
+            <li>{<MinusOutlined style={{ fontSize: '16px', color: '#08c' }} />} Average revenue</li>
+            <li>{<MinusOutlined style={{ fontSize: '16px', color: '#00E396' }} />} Rvenue</li>
           </ul>
         </div>
       </div>
@@ -41,7 +38,7 @@ function LineChart() {
         series={lineChart.series}
         type="area"
         height={350}
-        width={"100%"}
+        width={'100%'}
       />
     </>
   );
