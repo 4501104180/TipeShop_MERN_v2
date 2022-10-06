@@ -27,9 +27,9 @@ const productApi = {
 		return axiosInstance.get(url);
 	},
 
-	// [GET] /products/ranking/:type/:number/:page
-	findRankingProducts: (type, page, number) => {
-		const url = `/products/ranking/${type}/${page}/${number}`;
+	// [GET] /products/ranking/:type/:number
+	findRankingProducts: (type, number) => {
+		const url = `/products/ranking/${type}/${number}`;
 		return axiosInstance.get(url);
 	},
 };

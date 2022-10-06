@@ -61,9 +61,9 @@ const Home = () => {
 	const [sections, setSections] = useState(null);
 	useEffect(() => {
 		const getProductSection = async () => {
-			const soldSection = await productApi.findRankingProducts('sold', 1, 10);
-			const favoriteSection = await productApi.findRankingProducts('favorite', 1, 10);
-			const viewSection = await productApi.findRankingProducts('view', 1, 10);
+			const soldSection = await productApi.findRankingProducts('sold', 10);
+			const favoriteSection = await productApi.findRankingProducts('favorite', 10);
+			const viewSection = await productApi.findRankingProducts('view', 10);
 			// const [soldSection, favoriteSection, viewSection] = await Promise.all([
 			// 	productApi.findRankingProducts('sold', 10),
 			// 	productApi.findRankingProducts('favorite', 10),
@@ -85,15 +85,14 @@ const Home = () => {
 						<Teleport actions={actions} />
 						<Stack spacing={3}>
 							<Banners id="banners" />
-							<ProductSection id="sold-section" title="🛍  Hot selling products" products={sections.soldSection.products} page='sold' />
+							<ProductSection id="sold-section" title="🛍  Hot selling products" products={sections.soldSection} />
 							<Categories id="categories" title="📦  Categories" />
 							<ProductSection
 								id="search-section"
 								title="💖  Most likes products"
-								products={sections.favoriteSection.products}
-								page='favorite'
+								products={sections.favoriteSection}
 							/>
-							<ProductSection id="view-section" title="👀  Top view products" products={sections.viewSection.products} page='view' />
+							<ProductSection id="view-section" title="👀  Top view products" products={sections.viewSection} />
 							<ProductList id="product-list" title="🥰  Suggestions for you" />
 						</Stack>
 					</Fragment>

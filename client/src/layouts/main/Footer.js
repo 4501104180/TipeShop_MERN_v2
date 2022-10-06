@@ -182,7 +182,7 @@ const Footer = () => (
 );
 
 const RootStyle = styled('div')(({ theme }) => ({
-	paddingInline: '100px',
+	paddingInline: '20px',
 	marginTop: '50px',
 	backgroundColor: theme.palette.background.paper,
 }));
