@@ -9,7 +9,7 @@ class CategoriesAPI {
 		try {
 			const categories = await Category.aggregate([
 				{
-					$match: { parent_id: null, deleted: false },
+					$match: { parent_id: null },
 				},
 				{
 					$graphLookup: {
@@ -68,7 +68,7 @@ class CategoriesAPI {
 						children: {
 							$reduce: {
 								input: '$children',
-								initialValue: { level: -1, prevChild: [], presentChild: [], deleted:false },
+								initialValue: { level: -1, prevChild: [], presentChild: [], deleted: false },
 								in: {
 									$let: {
 										vars: {
