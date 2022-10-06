@@ -13,9 +13,9 @@ const propTypes = {
 	title: PropTypes.string,
 };
 
-const ProductList = ({ id, title }) => {
+const ProductList = ({ id, title, type }) => {
 	const [page, setPage] = useState(1);
-	const { isLoading, hasMore, products } = useInfiniteProduct(page, 10);
+	const { isLoading, hasMore, products } = useInfiniteProduct(page, 10, type);
 	const handleLoadMore = () => {
 		setPage((prevPage) => prevPage + 1);
 	};
