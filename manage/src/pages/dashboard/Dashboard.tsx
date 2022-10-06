@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Card, Col, Row, Typography, Progress, Button, Timeline, Skeleton } from 'antd';
+import { Card, Col, Row, Typography, Progress, Button, Timeline } from 'antd';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import {
   DollarTwoTone,
@@ -63,35 +63,6 @@ const Dashboard = () => {
       persent: '-20%',
       icon: <HeartTwoTone style={{ fontSize: '22px', color: '#08c' }} />,
       bnb: 'redtext',
-    },
-  ];
-  const timelineList = [
-    {
-      title: '$2,400 - Redesign store',
-      time: '09 JUN 7:20 PM',
-      color: 'green',
-    },
-    {
-      title: 'New order #3654323',
-      time: '08 JUN 12:20 PM',
-      color: 'green',
-    },
-    {
-      title: 'Company server payments',
-      time: '04 JUN 3:10 PM',
-    },
-    {
-      title: 'New card added for order #4826321',
-      time: '02 JUN 2:45 PM',
-    },
-    {
-      title: 'Unlock folders for development',
-      time: '18 MAY 1:30 PM',
-    },
-    {
-      title: 'New order #46282344',
-      time: '14 MAY 3:30 PM',
-      color: 'gray',
     },
   ];
   if (!dashboard) {
@@ -192,22 +163,29 @@ const Dashboard = () => {
         {/* History Order */}
         <Col xs={24} sm={24} md={12} lg={12} xl={8} className="mb-24">
           <Card bordered={false} className="criclebox h-full">
+            <Title style={{ position: 'absolute' }} level={5}>
+              Orders History
+            </Title>
             <div className="timeline-box">
-              <Title level={5}>Orders History</Title>
-              <Paragraph className="lastweek" style={{ marginBottom: 24 }}></Paragraph>
-              <Timeline pending="Recording..." className="timelinelist" reverse={reverse}>
-                {/* {timelineList.map((t, index) => (
-                  <Timeline.Item color={t.color} key={index}>
-                    <Title level={5}>{t.title}</Title>
-                    <Text>{t.time}</Text>
-                  </Timeline.Item>
-                ))} */}
-                {dashboard?.history.map((history, index) => (
-                  <Timeline.Item color={'gray'} key={index}>
-                    <Title level={5}>{history.status_text}</Title>
-                    <Text>{history.time}</Text>
-                  </Timeline.Item>
-                ))}
+              <Timeline className="timelinelist" reverse={!reverse}>
+                {dashboard?.history.map((_history, index) => {
+                  const { time, status, status_text } = _history;
+                  const event = new Date(time);
+                  var times = new Date(event.toJSON()).toLocaleString();
+                  let color;
+                  if (status === 'processing') color = 'gray';
+                  else if (status === 'transporting') color = 'orange';
+                  else if (status === 'delivered') color = 'green';
+                  else color = 'red';
+                  return (
+                    <>
+                      <Timeline.Item color={color} key={index}>
+                        <Title level={5}>{status_text}</Title>
+                        <Text>{times}</Text>
+                      </Timeline.Item>
+                    </>
+                  );
+                })}
               </Timeline>
               <Button type="primary" className="width-100" onClick={() => setReverse(!reverse)}>
                 {<MenuUnfoldOutlined />} REVERSE

@@ -137,8 +137,9 @@ img {
 }
 
 .timeline-box {
-  height: 550px;
+  margin-top: 45px;
+  height: 505px;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: Scroll;
   text-overflow: ellipsis;
 }
