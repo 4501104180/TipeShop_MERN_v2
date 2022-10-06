@@ -44,7 +44,6 @@ const ProductViewMore = ({ title, type }) => {
     const handleLoadMore = () => {
 		setPage((prevPage) => prevPage + 1);
 	};
-    console.log(products);
     return (
         <Stack>
             <Title variant="h6">{title}</Title>
