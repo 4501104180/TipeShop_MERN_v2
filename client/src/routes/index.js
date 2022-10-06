@@ -67,6 +67,7 @@ const Router = () => {
 				},
 				{ path: ':slug/pid:_id', element: <Product /> },
 				{ path: ':slug/cid:_id', element: <Category /> },
+				{ path: 'viewmore/:type', element: <ViewMore />}
 			],
 		},
 		// Not matched any routes
@@ -101,3 +102,5 @@ const Payment = PageLoader(lazy(() => import('../pages/checkout/Payment')));
 const Result = PageLoader(lazy(() => import('../pages/checkout/Result')));
 // Invoice
 const InvoiceLookUp = PageLoader(lazy(() => import('../pages/InvoiceLookUp')));
+// ViewMore
+const ViewMore = PageLoader(lazy(() => import('../pages/ViewMore')));
