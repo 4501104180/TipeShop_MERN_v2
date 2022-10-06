@@ -10,7 +10,6 @@ const paymentRouter = require('./payment');
 const operationsRouter = require('./operations');
 const resourcesRouter = require('./resources');
 const rolesRouter = require('./roles');
-const dashboardRouter = require('./dashboard');
 
 const initialRoutes = (app) => {
 	app.use('/api/accounts', accountsRouter);
@@ -24,7 +23,6 @@ const initialRoutes = (app) => {
 	app.use('/api/operations', operationsRouter);
 	app.use('/api/resources', resourcesRouter);
 	app.use('/api/roles', rolesRouter);
-	app.use('/api/dashboard', dashboardRouter);
 };
 
 module.exports = initialRoutes;

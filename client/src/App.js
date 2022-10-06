@@ -1,5 +1,4 @@
 // components
-import { useEffect } from 'react';
 import { LiveChat } from './components/live-chat';
 import { ScrollToTop } from './components/ScrollToTop';
 import Modal from './components/Modal';
@@ -13,14 +12,8 @@ import Router from './routes';
 import ThemeConfig from './theme';
 // utils
 import { SnackbarUtilsConfigurator } from './utils/snackbar';
-//Google Analytics
-import ReactGA from 'react-ga';
 
 const App = () => {
-	useEffect(() => {
-		ReactGA.initialize('UA-166801530-1');
-		ReactGA.pageview(window.location.pathname + window.location.search);
-	}, []);
 	const { isInitialized } = useAuth();
 	return isInitialized ? (
 		<ThemeConfig>
