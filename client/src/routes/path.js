@@ -11,6 +11,7 @@ export const PATH_MAIN = {
 	cart: '/cart',
 	news: '/news',
 	invoiceLookup: '/invoice/lookup',
+	viewmore: '/viewmore',
 };
 
 export const PATH_CUSTOMER = {

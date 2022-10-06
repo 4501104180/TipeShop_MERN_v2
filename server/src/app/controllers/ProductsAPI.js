@@ -443,17 +443,20 @@ class ProductsAPI {
 		}
 	}
 
-	// [GET] /products/ranking/:type/:number
+	// [GET] /products/ranking/:page/:type/:number
 	/*
 		type: String [sold, view, favorite],
 		number: Number,
 	*/
 	async findRankingProducts(req, res, next) {
 		try {
-			let { type, number } = req.params;
+			let { type, number, page } = req.params;
 			number = parseInt(number);
+			page = parseInt(page);
 
 			const GRAVITY = 1.8;
+			const totalProduct = await Product.count({ inventory_status: 'availabel' });
+			const totalPage = Math.ceil(totalProduct / number);
 			const products = await Product.aggregate([
 				{
 					$match: { inventory_status: 'availabel' },
@@ -501,8 +504,16 @@ class ProductsAPI {
 				{
 					$limit: number,
 				},
-			]);
-			res.status(200).json(products);
+			])
+				.skip((page - 1) * number)
+				.limit(number);
+			res.status(200).json({
+				products,
+				pagination: {
+					totalPage,
+					currentPage: page,
+				},
+			});
 		} catch (error) {
 			console.error(error);
 			next({ status: 500, msg: error.message });

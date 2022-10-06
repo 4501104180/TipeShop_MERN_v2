@@ -15,12 +15,12 @@ const propTypes = {
 	sx: object,
 };
 
-const ProductSection = ({ id, title, products, sx }) => {
+const ProductSection = ({ id, title, products, page, sx }) => {
 	return (
 		<Stack id={id} sx={{ ...sx }}>
 			<Stack direction="row" justifyContent="space-between" alignItems="center">
 				<Typography variant="h6">{title}</Typography>
-				<Link to="/auth" underline="hover">
+				<Link to={`/viewmore/${page}`} underline="hover">
 					<Typography variant="subtitle2" color="error">
 						View more <i className="bi bi-chevron-right"></i>
 					</Typography>
