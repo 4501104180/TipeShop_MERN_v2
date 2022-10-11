@@ -67,7 +67,7 @@ const Router = () => {
 				},
 				{ path: ':slug/pid:_id', element: <Product /> },
 				{ path: ':slug/cid:_id', element: <Category /> },
-				{ path: 'viewmore/:type', element: <ViewMore />}
+				{ path: 'viewmore/:type', element: <ViewMore /> },
 			],
 		},
 		// Not matched any routes

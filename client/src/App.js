@@ -15,10 +15,11 @@ import ThemeConfig from './theme';
 import { SnackbarUtilsConfigurator } from './utils/snackbar';
 //Google Analytics
 import ReactGA from 'react-ga';
+const TRACKING_ID = 'UA-166801530-1';
 
 const App = () => {
 	useEffect(() => {
-		ReactGA.initialize('UA-166801530-1');
+		ReactGA.initialize(TRACKING_ID);
 		ReactGA.pageview(window.location.pathname + window.location.search);
 	}, []);
 	const { isInitialized } = useAuth();
