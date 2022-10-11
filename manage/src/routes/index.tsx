@@ -87,6 +87,22 @@ const Router = () => {
               ),
             },
             {
+              path: 'create',
+              element: (
+                <ProductCreate />
+                // <ActionGuard actionsRequired={['create']}>
+                // </ActionGuard>
+              ),
+            },
+            {
+              path: 'edit/:_id',
+              element: (
+                <ProductCreate />
+                // <ActionGuard actionsRequired={['update']}>
+                // </ActionGuard>
+              ),
+            },
+            {
               path: 'categories',
               element: (
                 <AccessGuard
@@ -189,6 +205,7 @@ const AccountList = PageLoader(lazy(() => import('../pages/account/AccountList')
 const AccountCreate = PageLoader(lazy(() => import('../pages/account/AccountCreate')));
 const Categories = PageLoader(lazy(() => import('../pages/product/Categories')));
 const ProductList = PageLoader(lazy(() => import('../pages/product/ProductList')));
+const ProductCreate = PageLoader(lazy(() => import('../pages/product/ProductCreate')));
 const Roles = PageLoader(lazy(() => import('../pages/access-control/Roles')));
 const Resources = PageLoader(lazy(() => import('../pages/access-control/Resources')));
 const Operations = PageLoader(lazy(() => import('../pages/access-control/Operations')));
