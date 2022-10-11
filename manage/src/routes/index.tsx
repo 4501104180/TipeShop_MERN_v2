@@ -200,7 +200,7 @@ const Router = () => {
 };
 
 // Main
-const Dashboard = PageLoader(lazy(() => import('../pages/Dashboard')));
+const Dashboard = PageLoader(lazy(() => import('../pages/dashboard/Dashboard')));
 const AccountList = PageLoader(lazy(() => import('../pages/account/AccountList')));
 const AccountCreate = PageLoader(lazy(() => import('../pages/account/AccountCreate')));
 const Categories = PageLoader(lazy(() => import('../pages/product/Categories')));
