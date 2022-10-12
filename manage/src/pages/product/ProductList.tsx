@@ -25,6 +25,7 @@ import { PATH_DASHBOARD } from '../../routes/path';
 import { distinguishImage } from '../../utils/formatImage';
 import { capitalize } from '../../utils/formatString';
 import { deleteProductAction } from '../../redux/actions/product';
+import { toVND } from '../../utils/formatMoney';
 
 const { Text } = Typography;
 
@@ -74,7 +75,8 @@ const columns: ColumnsType<Product> = [
     dataIndex: 'discount',
     render: (_, record) => {
       const { discount } = record;
-      return <Text strong>{discount}</Text>;
+      var _discount = Number(discount);
+      return <Text strong>{toVND(_discount)}</Text>;
     },
   },
   {
@@ -82,7 +84,7 @@ const columns: ColumnsType<Product> = [
     dataIndex: 'discount_rate',
     render: (_, record) => {
       const { discount_rate } = record;
-      return <Text strong>{discount_rate}</Text>;
+      return <Text strong>{discount_rate}%</Text>;
     },
   },
   {
@@ -90,7 +92,8 @@ const columns: ColumnsType<Product> = [
     dataIndex: 'original_price',
     render: (_, record) => {
       const { original_price } = record;
-      return <Text strong>{original_price}</Text>;
+      var _orginal_price = Number(original_price);
+      return <Text strong>{toVND(_orginal_price)}</Text>;
     },
   },
   {
@@ -98,7 +101,8 @@ const columns: ColumnsType<Product> = [
     dataIndex: 'price',
     render: (_, record) => {
       const { price } = record;
-      return <Text strong>{price}</Text>;
+      var _price = Number(price);
+      return <Text strong>{toVND(_price)}</Text>;
     },
   },
   {
