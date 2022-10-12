@@ -6,22 +6,34 @@ import axios from 'axios';
 // apis
 import type {
   CreateCategoryResponse,
+  CreateProductResponse,
   DeleteCategoryResponse,
+  DeleteProductResponse,
   FindAllCategoriesResponse,
+  FindAllProductsResponse,
   UpdateCategoryResponse,
+  UpdateProductResponse,
 } from '../../apis/productApi';
 import productApi from '../../apis/productApi';
 // models
-import type { Category } from '../../models';
+import type { Category, Product } from '../../models';
 // redux
 import { RootState } from '../store';
 import {
   CreateCategoryPayload,
+  CreateProductPayload,
   CREATE_CATEGORY,
+  CREATE_PRODUCT,
   DeleteCategoryPayload,
   DELETE_CATEGORY,
+  DELETE_PRODUCT,
+  DeletProductPayload,
+  GetProductsPayload,
+  GET_PRODUCTS,
   UpdateCategoryPayload,
+  UpdateProductPayload,
   UPDATE_CATEGORY,
+  UPDATE_PRODUCT,
 } from '../actions/product';
 import { GET_CATEGORIES } from '../actions/product';
 
@@ -30,12 +42,14 @@ export interface ProductState {
   error: string | undefined;
   lastAction: 'create' | 'update' | 'delete' | undefined;
   categories: Category[];
+  products: Product[];
 }
 const initialState: ProductState = {
   isLoading: false,
   error: undefined,
   lastAction: undefined,
   categories: [],
+  products: [],
 };
 const categoriesChanged = (
   categories: Category[],
@@ -113,7 +127,25 @@ const slice = createSlice({
       state.categories = newCategoryByCategory(current(state.categories), category);
     },
     deleteCategorySuccess: (state, action: PayloadAction<Category>) => {
-      state.categories = newCategoryByCategory(current(state.categories), action.payload);
+      state.categories = state.categories.filter((category) => category !== action.payload);
+    },
+    getProductsSucess: (state, action: PayloadAction<FindAllProductsResponse>) => {
+      const { data } = action.payload;
+      state.products = data;
+    },
+    createProductsSucess: (state, action: PayloadAction<Product>) => {
+      const product = action.payload;
+      state.products = [...state.products, product];
+    },
+    updateProductsSucess: (state, action: PayloadAction<Product>) => {
+      const productUpdate = action.payload;
+      const { _id } = productUpdate;
+      state.products = state.products.map((product) =>
+        product._id === _id ? productUpdate : product
+      );
+    },
+    deleteProductSuccess: (state, action: PayloadAction<Product>) => {
+      state.products = state.products.filter((product) => product._id !== action.payload._id);
     },
   },
 });
@@ -126,7 +158,7 @@ export default reducer;
 function* getCategories() {
   try {
     yield put(actions.startLoading());
-    const response: FindAllCategoriesResponse = yield call(productApi.findAllRootCategories);
+    const response: FindAllCategoriesResponse = yield call(productApi.findAllCategories);
     const { data } = response;
     yield put(actions.getCategoriesSuccess({ data }));
     yield put(actions.actionSuccess());
@@ -184,10 +216,77 @@ function* deleteCategory(action: PayloadAction<DeleteCategoryPayload>) {
     }
   }
 }
+function* getProducts(action: PayloadAction<GetProductsPayload>) {
+  try {
+    yield put(actions.startLoading());
+    const response: FindAllProductsResponse = yield call(productApi.findAllProducts);
+    const { data } = response;
+    yield put(actions.getProductsSucess({ data }));
+    yield put(actions.actionSuccess());
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      yield put(actions.hasError(error.response?.statusText));
+      message.error(error.response?.statusText);
+    }
+  }
+}
+function* createProduct(action: PayloadAction<CreateProductPayload>) {
+  try {
+    yield put(actions.startLoading());
+    const response: CreateProductResponse = yield call(productApi.createProduct, action.payload);
+    const { product, msg } = response;
+    yield put(actions.createProductsSucess(product));
+    yield put(actions.actionSuccess('create'));
+    message.success({ content: msg, key: 'create' });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      yield put(actions.hasError(error.response?.statusText));
+      message.error(error.response?.statusText);
+    }
+  }
+}
+function* updateProduct(action: PayloadAction<UpdateProductPayload>) {
+  try {
+    yield put(actions.startLoading());
+    const { _id, ...values } = action.payload;
+    const response: UpdateProductResponse = yield call(productApi.updateProduct, { _id }, values);
+    const { product, msg } = response;
+    yield put(actions.updateProductsSucess(product));
+    yield put(actions.actionSuccess('update'));
+    message.success({ content: msg, key: 'update' });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      yield put(actions.hasError(error.response?.statusText));
+      message.error({ content: error.response?.statusText, key: 'update' });
+    }
+  }
+}
+function* deleteProduct(action: PayloadAction<DeletProductPayload>) {
+  try {
+    yield put(actions.startLoading());
+    const { _id } = action.payload;
+    const response: DeleteProductResponse = yield call(productApi.deleteProduct, { _id });
+    const { product, msg } = response;
+    yield put(actions.actionSuccess('delete'));
+    yield put(actions.deleteProductSuccess(product));
+    message.success({ content: msg, key: 'delete' });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      yield put(actions.hasError(error.response?.statusText));
+      message.error({ content: error.response?.statusText, key: 'update' });
+    }
+  }
+}
 export function* productSaga() {
   yield takeEvery(GET_CATEGORIES, getCategories);
 
   yield takeLatest(CREATE_CATEGORY, createCategory);
   yield takeLatest(UPDATE_CATEGORY, updateCategory);
   yield takeLatest(DELETE_CATEGORY, deleteCategory);
+
+  yield takeEvery(GET_PRODUCTS, getProducts);
+  
+  yield takeLatest(CREATE_PRODUCT, createProduct);
+  yield takeLatest(UPDATE_PRODUCT, updateProduct);
+  yield takeLatest(DELETE_PRODUCT, deleteProduct);
 }

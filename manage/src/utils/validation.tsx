@@ -22,3 +22,10 @@ export const updateAccountValidation = yup.object().shape({
 export const createCategoryValidation = yup.object().shape({
   name: yup.string().required('Name is required!'),
 });
+
+export const createProductValidation = yup.object().shape({
+  name: yup.string().required('Name is required!'),
+});
+export const updateProductValidation = yup.object().shape({
+  name: yup.string().required('Name is required!'),
+});

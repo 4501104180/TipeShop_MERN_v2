@@ -7,6 +7,17 @@ class CategoriesAPI {
 	// [GET] /categories
 	async findAllRoot(req, res, next) {
 		try {
+			const categories = await Category.find({
+				status: 'active',
+			}).select('_id name image slug');
+			res.status(200).json(categories);
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+	async findAllCategories(req, res, next) {
+		try {
 			const categories = await Category.aggregate([
 				{
 					$match: { parent_id: null },
@@ -319,7 +330,7 @@ class CategoriesAPI {
 	async delete(req, res, next) {
 		try {
 			let { _id } = req.params;
-			const category = await Category.deleteById({ _id });
+			const category = await Category.findByIdAndRemove({ _id });
 			res.status(201).json({
 				msg: 'Delete category successfully!',
 				category,

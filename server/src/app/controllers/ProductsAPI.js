@@ -5,22 +5,26 @@ const Product = require('../models/Product');
 const AttributeValue = require('../models/AttributeValue');
 // utils
 const cloudinaryUpload = require('../../utils/cloudinaryUpload');
+const Category = require('../models/Category');
 
 class ProductsAPI {
 	// [GET] /products
 	async findAll(req, res, next) {
 		try {
-			const data = await Product.find({})
-				.populate({
-					path: 'category',
-					select: 'name image',
-				})
+			const data = await Product.find()
 				.populate({
 					path: 'attribute_values',
-					select: 'display_value query_value',
+					select: 'attribute_query_name display_value query_value',
+				})
+				.populate({
+					path: 'warranty_infor',
+					select: 'name value',
+				})
+				.populate({
+					path: 'specifications',
+					select: 'name value',
 				});
-
-			res.status(200).json(data);
+			res.status(200).json({ data: data });
 		} catch (error) {
 			console.error(error);
 			next({ status: 500, msg: error.message });
@@ -573,6 +577,97 @@ class ProductsAPI {
 			res.status(201).json({
 				msg: 'Insert product successfully!',
 				product,
+			});
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+	// [PUT] /products/:_id
+	/*
+		name: String,
+		images: [String],
+		quantity: Number,
+		category: Number,
+		[attribute_values]: [attribute_value._id],
+		[warranty_infor]: [warranty._id],
+		[specifications]: [specification._id],
+		...
+	*/
+	async update(req, res, next) {
+		try {
+			let { _id } = req.params;
+			const { warranty_infor, specifications, ...body } = req.body;
+			const images = req.files;
+
+			// handle images
+			if (!images) {
+				next({ status: 400, msg: 'Image field is required!' });
+				return;
+			}
+			const imageObjs = [];
+			await Promise.all(
+				images.map(async (file) => {
+					const { public_id } = await cloudinaryUpload(file.path, 'product');
+					imageObjs.push(public_id);
+				})
+			);
+
+			// handle warranty
+			const warrantyObjs = [];
+			warranty_infor &&
+				warranty_infor.map((warranty) => {
+					warrantyObjs.push(mongoose.Types.ObjectId(warranty));
+				});
+
+			// handle specification
+			const specificationObjs = [];
+			specifications &&
+				specifications.map((specification) => {
+					specificationObjs.push(mongoose.Types.ObjectId(specification));
+				});
+
+			const product = await Product.findByIdAndUpdate(
+				_id,
+				{ images: imageObjs, warranty_infor: warrantyObjs, specifications: specificationObjs, ...body },
+				{ new: true }
+			);
+			res.status(201).json({
+				msg: 'Edit product successfully!',
+				product,
+			});
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+	// [DELETE] /products/:_id
+	async delete(req, res, next) {
+		try {
+			let { _id } = req.params;
+			const product = await Product.findOneAndDelete({ _id });
+			res.status(201).json({
+				msg: 'Delete product successfully!',
+				product,
+			});
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+
+	// [PATCH] /categories/restore/:_id
+	async restore(req, res, next) {
+		try {
+			let { _id } = req.params;
+
+			const productDeleted = await Product.findOneDeleted({ _id });
+
+			await Product.restore({ _id });
+
+			res.status(200).json({
+				msg: 'Restore product successfully!',
+				product: productDeleted,
 			});
 		} catch (error) {
 			console.error(error);
