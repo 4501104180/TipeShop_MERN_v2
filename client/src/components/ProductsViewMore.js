@@ -8,14 +8,14 @@ import ProductCard from './ProductCard';
 import useInfiniteProduct from '../hooks/useInfiniteProduct';
 
 const propTypes = {
-	id: PropTypes.string,
-	title: PropTypes.string,
-	products: PropTypes.array,
+    id: PropTypes.string,
+    title: PropTypes.string,
+    products: PropTypes.array,
 };
 
 const SkeletonLoad = (
 	<Stack spacing={3}>
-		<Stack direction="row">
+		<Stack direction="row" >
 			{[...Array(5)].map((_, index) => (
 				<Stack key={index} sx={{ p: 2 }}>
 					<Skeleton variant="rectangular" width={180} height={180} />
@@ -25,7 +25,7 @@ const SkeletonLoad = (
 				</Stack>
 			))}
 		</Stack>
-		<Stack direction="row">
+		<Stack direction="row" >
 			{[...Array(5)].map((_, index) => (
 				<Stack key={index} sx={{ p: 2 }}>
 					<Skeleton variant="rectangular" width={180} height={180} />
@@ -39,45 +39,45 @@ const SkeletonLoad = (
 );
 
 const ProductViewMore = ({ title, type }) => {
-	const [page, setPage] = useState(1);
+    const [page, setPage] = useState(1);
 	const { isLoading, hasMore, products } = useInfiniteProduct(page, 10, type);
-	const handleLoadMore = () => {
+    const handleLoadMore = () => {
 		setPage((prevPage) => prevPage + 1);
 	};
-	return (
-		<Stack>
-			<Title variant="h6">{title}</Title>
-			<Wrapper>
-				<Fragment>
-					{products.map((product) => (
-						<ProductCard key={product._id} product={product} />
-					))}
-					<LoadMore>
-						{!isLoading && hasMore && (
-							<LoadButton onClick={handleLoadMore}>
-								<Typography variant="subtitle2">Load more</Typography>
-							</LoadButton>
-						)}
-						{isLoading && <CircularProgress size={25} color="error" />}
-						{!products && SkeletonLoad}
-					</LoadMore>
-				</Fragment>
-			</Wrapper>
-		</Stack>
-	);
+    return (
+        <Stack>
+            <Title variant="h6">{title}</Title>
+            <Wrapper>
+                <Fragment>
+                    {products.map((product) => (
+                        <ProductCard key={product._id} product={product} />
+                    ))}
+                    <LoadMore>
+					{!isLoading && hasMore && (
+						<LoadButton onClick={handleLoadMore}>
+							<Typography variant="subtitle2">Load more</Typography>
+						</LoadButton>
+					)}
+					{isLoading && <CircularProgress size={25} color="error" />}
+                    {!products && SkeletonLoad}
+				</LoadMore>
+                </Fragment>
+            </Wrapper>
+        </Stack>
+    );
 };
 
 const Wrapper = styled('div')({
-	position: 'relative',
-	display: 'flex',
-	flexWrap: 'wrap',
-	justifyContent: 'center',
-	marginBottom: '50px',
+    position: 'relative',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginBottom: '50px',
 });
 
 const Title = styled(Typography)({
-	textAlign: 'center',
-});
+    textAlign: 'center',
+})
 
 const LoadMore = styled('div')({
 	position: 'absolute',

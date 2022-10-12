@@ -21,7 +21,7 @@ const Categories = ({ id, title }) => {
 	useEffect(() => {
 		const getCategories = async () => {
 			let categories = await categoryApi.findAllRoot();
-			setCategories(categories.data);
+			setCategories(categories);
 		};
 		getCategories();
 	}, []);
