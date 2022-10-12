@@ -7,129 +7,11 @@ class CategoriesAPI {
 	// [GET] /categories
 	async findAllRoot(req, res, next) {
 		try {
-			const categories = await Category.aggregate([
-				{
-					$match: { parent_id: null },
-				},
-				{
-					$graphLookup: {
-						from: 'categories',
-						startWith: '$_id',
-						connectFromField: '_id',
-						connectToField: 'parent_id',
-						maxDepth: 10,
-						depthField: 'level',
-						as: 'children',
-					},
-				},
-				// must unwind & sort to get all the children descending by level for algorithmic purpose
-				{
-					$unwind: {
-						path: '$children',
-						preserveNullAndEmptyArrays: true,
-					},
-				},
-				{ $sort: { 'children.level': -1 } },
-				// get the categories of children
-				{
-					$group: {
-						_id: '$_id',
-						name: { $first: '$name' },
-						image: { $first: '$image' },
-						banners: { $first: '$banners' },
-						parent_id: { $first: '$parent_id' },
-						status: { $first: '$status' },
-						slug: { $first: '$slug' },
-						children: {
-							$push: {
-								$cond: {
-									if: { $gt: ['$children._id', 0] },
-									then: {
-										_id: '$children._id',
-										name: '$children.name',
-										image: '$children.image',
-										banners: '$children.banners',
-										parent_id: '$children.parent_id',
-										status: '$children.status',
-										slug: '$children.slug',
-										level: '$children.level',
-									},
-									else: '$$REMOVE',
-								},
-							},
-						},
-					},
-				},
-				{
-					$sort: { _id: 1 },
-				},
-				{
-					$addFields: {
-						children: {
-							$reduce: {
-								input: '$children',
-								initialValue: { level: -1, prevChild: [], presentChild: [], deleted: false },
-								in: {
-									$let: {
-										vars: {
-											prev: {
-												$cond: {
-													if: { $eq: ['$$value.level', '$$this.level'] },
-													then: '$$value.prevChild', // keep the same as before if same level
-													else: '$$value.presentChild', // present child will become previouse child for nested purpose
-												},
-											},
-											current: {
-												$cond: {
-													if: { $eq: ['$$value.level', '$$this.level'] },
-													then: '$$value.presentChild', // keep the same as before if same level
-													else: [], // recreate nested child
-												},
-											},
-										},
-										in: {
-											level: '$$this.level', // update level for condition purpose
-											prevChild: '$$prev',
-											presentChild: {
-												// present = current + { ...this, children: [childs that have parent_id equal to this._id] }
-												$concatArrays: [
-													'$$current',
-													[
-														{
-															$mergeObjects: [
-																'$$this',
-																{
-																	children: {
-																		$filter: {
-																			input: '$$prev',
-																			as: 'p',
-																			cond: { $eq: ['$$p.parent_id', '$$this._id'] },
-																		},
-																	},
-																},
-															],
-														},
-													],
-												],
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-				{
-					$addFields: {
-						children: '$children.presentChild',
-					},
-				},
-			]);
-
-			res.status(200).json({
-				data: categories,
-			});
-		}catch (error) {
+			const categories = await Category.find({
+				status: 'active',
+			}).select('_id name image slug');
+			res.status(200).json(categories);
+		} catch (error) {
 			console.error(error);
 			next({ status: 500, msg: error.message });
 		}
@@ -258,7 +140,7 @@ class CategoriesAPI {
 			res.status(200).json({
 				data: categories,
 			});
-		}catch (error) {
+		} catch (error) {
 			console.error(error);
 			next({ status: 500, msg: error.message });
 		}
