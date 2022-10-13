@@ -295,6 +295,9 @@ const ProductForm = ({ product, category }: ProductFormProps) => {
                 }
                 showRejected
               />
+              <div style={{ color: 'red' }}>
+                {Boolean(touched.images && errors.images) && errors.images}
+              </div>
             </Box>
           </Col>
         </Row>

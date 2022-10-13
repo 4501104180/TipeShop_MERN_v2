@@ -9,6 +9,7 @@ export type RootResource =
   | 'customer service'
   | 'accounts'
   | 'products'
+  | 'orders'
   | 'access control'
   | 'recycle bin';
 

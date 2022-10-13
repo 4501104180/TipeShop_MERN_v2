@@ -35,6 +35,7 @@ export interface DashboardAllResponse extends StatusResponse {
   graph: GraphProps[];
   products: Products[];
   history: HistoryProps[];
+  [key: string]: any;
 }
 
 const dashboardApi = {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 
 import { Card, Col, Row, Typography, Progress, Button, Timeline } from 'antd';
 import Paragraph from 'antd/lib/typography/Paragraph';
@@ -29,43 +29,43 @@ const Dashboard = () => {
   const [reverse, setReverse] = useState(false);
   useEffect(() => {
     const getDashboard = async () => {
-      const dashboard = await dashboardApi.dashboardALL();
-      setDashboard(dashboard);
-      console.log(dashboard);
+      const response = await dashboardApi.dashboardALL();
+      setDashboard(response.data ? response.data : response);
     };
     getDashboard();
   }, []);
   const count = [
     {
       today: 'Gross revenues',
-      title: toVND(dashboard?.statistic.totalSale || 0),
+      title: toVND(dashboard?.statistic?.totalSale || 0),
       persent: '+30%',
       icon: <DollarTwoTone style={{ fontSize: '22px', color: '#08c' }} />,
       bnb: 'bnb2',
     },
     {
       today: 'Shopping basket',
-      title: dashboard?.statistic.totalOrder || 0,
+      title: dashboard?.statistic?.totalOrder || 0,
       persent: '10%',
       icon: <ShoppingTwoTone style={{ fontSize: '22px', color: '#08c' }} />,
       bnb: 'bnb2',
     },
     {
       today: 'Users',
-      title: dashboard?.statistic.totalUser || 0,
+      title: dashboard?.statistic?.totalUser || 0,
       persent: '+20%',
       icon: <IdcardTwoTone style={{ fontSize: '22px', color: '#08c' }} />,
       bnb: 'bnb2',
     },
     {
       today: 'All of products',
-      title: dashboard?.statistic.totalProduct || 0,
+      title: dashboard?.statistic?.totalProduct || 0,
       persent: '-20%',
       icon: <HeartTwoTone style={{ fontSize: '22px', color: '#08c' }} />,
       bnb: 'redtext',
     },
   ];
   if (!dashboard) {
+    return <div>loading....</div>;
   }
   return (
     <div className="layout-content">
@@ -125,12 +125,12 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dashboard?.products.map((product, index) => {
+                  {dashboard?.products?.map((product, index) => {
                     const firstIndex: number = 0;
                     const { images, quantity, quantity_sold } = product;
                     return (
-                      <>
-                        <tr key={index}>
+                      <Fragment key={index}>
+                        <tr>
                           <td>
                             <h6>
                               <img src={distinguishImage(images[firstIndex])} alt="" />
@@ -152,7 +152,7 @@ const Dashboard = () => {
                             </div>
                           </td>
                         </tr>
-                      </>
+                      </Fragment>
                     );
                   })}
                 </tbody>
@@ -168,22 +168,22 @@ const Dashboard = () => {
             </Title>
             <div className="timeline-box">
               <Timeline className="timelinelist" reverse={!reverse}>
-                {dashboard?.history.map((_history, index) => {
+                {dashboard?.history?.map((_history, index) => {
                   const { time, status, status_text } = _history;
                   const event = new Date(time);
                   var times = new Date(event.toJSON()).toLocaleString();
                   let color;
-                  if (status === 'processing') color = 'gray';
+                  if (status === 'processing') color = '#1890ff';
                   else if (status === 'transporting') color = 'orange';
                   else if (status === 'delivered') color = 'green';
                   else color = 'red';
                   return (
-                    <>
-                      <Timeline.Item color={color} key={index}>
+                    <Fragment key={index}>
+                      <Timeline.Item color={color}>
                         <Title level={5}>{status_text}</Title>
                         <Text>{times}</Text>
                       </Timeline.Item>
-                    </>
+                    </Fragment>
                   );
                 })}
               </Timeline>

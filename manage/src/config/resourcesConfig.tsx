@@ -5,6 +5,7 @@ import {
   DashboardOutlined,
   CustomerServiceOutlined,
   SkinOutlined,
+  ShoppingOutlined,
   ControlOutlined,
   RestOutlined,
 } from '@ant-design/icons';
@@ -109,6 +110,14 @@ export const generateResources = (resources: Resource[]): ResourceConfig[] => {
         }) ||
           null,
       ],
+    }) ||
+      null,
+    (root['orders'] && {
+      id: root['orders']._id,
+      locked: root['orders'].locked,
+      key: PATH_DASHBOARD.orders,
+      label: root['orders'].name,
+      icon: <ShoppingOutlined />,
     }) ||
       null,
     (root['access control'] && {

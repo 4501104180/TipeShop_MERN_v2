@@ -28,6 +28,7 @@ export const PATH_DASHBOARD = {
     create: () => path(ROOT_PRODUCT, `/create`),
     edit: (_id: string) => path(ROOT_PRODUCT, `/edit/${_id}`),
   },
+  orders: path(ROOT_DASHBOARD, 'orders'),
   accessControl: {
     root: ROOT_ACCESS_CONTROL,
     roles: path(ROOT_ACCESS_CONTROL, '/roles'),

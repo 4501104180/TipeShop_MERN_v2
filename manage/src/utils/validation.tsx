@@ -29,7 +29,10 @@ export const createProductValidation = yup.object().shape({
     .string()
     .required('Quantity is required!')
     .matches(/^[0-9]+$/, 'Invalid number!'),
-  limit: yup.string().matches(/^[0-9]+$/, 'Invalid number!'),
+  limit: yup
+    .string()
+    .nullable()
+    .matches(/^[0-9]+$/, 'Invalid number!'),
   discount: yup.string().matches(/^[0-9]+$/, 'Invalid number!'),
   discount_rate: yup.string().matches(/^[0-9]{0,2}$/, 'Invalid number! (number 1-99)'),
   original_price: yup
@@ -40,7 +43,7 @@ export const createProductValidation = yup.object().shape({
     .string()
     .required('Price is required!')
     .matches(/^[0-9]+$/, 'Invalid number!'),
-  // images:
+  images: yup.array().min(1, 'This field is required!'),
 });
 export const updateProductValidation = yup.object().shape({
   name: yup.string().required('Name is required!'),
@@ -48,7 +51,10 @@ export const updateProductValidation = yup.object().shape({
     .string()
     .required('Quantity is required!')
     .matches(/^[0-9]+$/, 'Invalid number!'),
-  limit: yup.string().matches(/^[0-9]+$/, 'Invalid number!'),
+  limit: yup
+    .string()
+    .nullable()
+    .matches(/^[0-9]+$/, 'Invalid number!'),
   discount: yup.string().matches(/^[0-9]+$/, 'Invalid number!'),
   discount_rate: yup.string().matches(/^[0-9]{0,2}$/, 'Invalid number! (number 1-99)'),
   original_price: yup
@@ -59,5 +65,5 @@ export const updateProductValidation = yup.object().shape({
     .string()
     .required('Price is required!')
     .matches(/^[0-9]+$/, 'Invalid number!'),
-  // images:
+  images: yup.array().min(1, 'This field is required!'),
 });

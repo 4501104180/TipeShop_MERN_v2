@@ -2,7 +2,14 @@ import { useState, Key } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import type { ColumnsType } from 'antd/es/table';
 import { Table, Space, Avatar, Image, Typography, Tag, Button, Modal } from 'antd';
-import { UserOutlined, EditOutlined, DeleteOutlined, FolderAddOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  FolderAddOutlined,
+  DownloadOutlined,
+} from '@ant-design/icons';
+import { CSVLink } from 'react-csv';
 
 // config
 import { appConfig } from '../../config';
@@ -128,6 +135,15 @@ const AccountList = () => {
   const handleChangeSelectedRow = (newSelectedRowKeys: Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
+  const headers = [
+    { label: 'First Name', key: 'firstname' },
+    { label: 'Email Address', key: 'email' },
+    { label: 'Phone Number', key: 'phone' },
+  ];
+  const data = accounts.map((account) => {
+    const { name, email, phone_number } = account;
+    return { firstname: name, email: email, phone: phone_number };
+  });
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
       <Space size="middle">
@@ -139,6 +155,13 @@ const AccountList = () => {
         <Button type="dashed" shape="round" icon={<DeleteOutlined />} danger>
           Recycle bin
         </Button>
+
+        <CSVLink data={data} headers={headers} filename={'TipeShop Export Email.csv'}>
+          <Button type="primary" shape="round" icon={<DownloadOutlined />} ghost>
+            Export Email
+          </Button>
+        </CSVLink>
+
         {selectedRowKeys.length > 0 && (
           <Button type="primary" shape="round" danger icon={<DeleteOutlined />}>
             Delete selected accounts
