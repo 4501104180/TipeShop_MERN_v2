@@ -44,19 +44,15 @@ const ProductCreate = () => {
   const isEdit = window.location.pathname.indexOf('/edit') >= 0;
   const _id = window.location.pathname.split('/').pop();
   const propsProduct: ProductFormProps & { backTo: string } = {
-          product: isEdit
-            ? products.find((product) => product._id === _id)
-            : undefined,
-          backTo: PATH_DASHBOARD.products.productList,
-        }
+    product: isEdit ? products.find((product) => product._id === _id) : undefined,
+    backTo: PATH_DASHBOARD.products.productList,
+  };
   return (
     <div>
       <Back backTo={propsProduct.backTo} scrollKeys={scrollKeys} />
       <Space direction="vertical" size="small" id={keys.general.key}>
         <Title level={5}>{keys.general.label}</Title>
-        <ProductForm
-          product={propsProduct.product}
-        />
+        <ProductForm product={propsProduct.product} />
       </Space>
     </div>
   );

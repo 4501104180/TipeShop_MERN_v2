@@ -85,15 +85,25 @@ const Home = () => {
 						<Teleport actions={actions} />
 						<Stack spacing={3}>
 							<Banners id="banners" />
-							<ProductSection id="sold-section" title="🛍  Hot selling products" products={sections.soldSection.products} page='sold' />
 							<Categories id="categories" title="📦  Categories" />
+							<ProductSection
+								id="sold-section"
+								title="🛍  Hot selling products"
+								products={sections.soldSection.products}
+								page="sold"
+							/>
 							<ProductSection
 								id="search-section"
 								title="💖  Most likes products"
 								products={sections.favoriteSection.products}
-								page='favorite'
+								page="favorite"
 							/>
-							<ProductSection id="view-section" title="👀  Top view products" products={sections.viewSection.products} page='view' />
+							<ProductSection
+								id="view-section"
+								title="👀  Top view products"
+								products={sections.viewSection.products}
+								page="view"
+							/>
 							<ProductList id="product-list" title="🥰  Suggestions for you" />
 						</Stack>
 					</Fragment>

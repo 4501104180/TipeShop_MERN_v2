@@ -10,6 +10,10 @@ import {
 	Star,
 	More,
 } from '@mui/icons-material';
+import { InlineReactionButtons } from 'sharethis-reactjs';
+import { InlineShareButtons } from 'sharethis-reactjs';
+import { StickyShareButtons } from 'sharethis-reactjs';
+import { InlineFollowButtons } from 'sharethis-reactjs';
 
 // apis
 import productApi from '../apis/productApi';
@@ -97,6 +101,33 @@ const Product = () => {
 								<Information information={product.information} />
 							</Stack>
 						</Wrapper>
+						<div className="product__info__item">
+							<div className="product__info__item__list">
+								<InlineShareButtons
+									config={{
+										alignment: 'left', // alignment of buttons (left, center, right)
+										color: 'social', // set the color of buttons (social, white)
+										enabled: true, // show/hide buttons (true, false)
+										font_size: 16, // font size for the buttons
+										labels: 'cta', // button labels (cta, counts, null)
+										language: 'en', // which language to use (see LANGUAGES)
+										networks: [
+											// which networks to include (see SHARING NETWORKS)
+
+											'messenger',
+											'facebook',
+											'twitter',
+										],
+										padding: 12, // padding within buttons (INTEGER)
+										radius: 4, // the corner radius on each button (INTEGER)
+										show_total: true,
+										size: 25, // the size of each button (INTEGER)
+
+										url: window.location.href, // (defaults to current url)
+									}}
+								/>
+							</div>
+						</div>
 						{similarSection && similarSection.length > 0 && (
 							<Wrapper>
 								<Title>Similar Products</Title>

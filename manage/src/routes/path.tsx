@@ -8,6 +8,7 @@ const ROOT_EXTERNAL = '/external';
 
 const ROOT_ACCOUNT = path(ROOT_DASHBOARD, 'accounts');
 const ROOT_PRODUCT = path(ROOT_DASHBOARD, 'products');
+const ROOT_ORDER = path(ROOT_DASHBOARD, 'orders');
 const ROOT_ACCESS_CONTROL = path(ROOT_DASHBOARD, 'access-control');
 const ROOT_RECYCLE_BIN = path(ROOT_DASHBOARD, 'recycle-bin');
 
@@ -28,7 +29,10 @@ export const PATH_DASHBOARD = {
     create: () => path(ROOT_PRODUCT, `/create`),
     edit: (_id: string) => path(ROOT_PRODUCT, `/edit/${_id}`),
   },
-  orders: path(ROOT_DASHBOARD, 'orders'),
+  orders: {
+    root: ROOT_ORDER,
+    detail: (_id: string) => path(ROOT_ORDER, `/detail/${_id}`),
+  },
   accessControl: {
     root: ROOT_ACCESS_CONTROL,
     roles: path(ROOT_ACCESS_CONTROL, '/roles'),

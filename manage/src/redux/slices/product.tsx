@@ -127,7 +127,7 @@ const slice = createSlice({
       state.categories = newCategoryByCategory(current(state.categories), category);
     },
     deleteCategorySuccess: (state, action: PayloadAction<Category>) => {
-      state.categories = state.categories.filter((category) => category !== action.payload);
+      state.categories = state.categories.filter((category) => category._id !== action.payload._id);
     },
     getProductsSucess: (state, action: PayloadAction<FindAllProductsResponse>) => {
       const { data } = action.payload;
@@ -285,7 +285,7 @@ export function* productSaga() {
   yield takeLatest(DELETE_CATEGORY, deleteCategory);
 
   yield takeEvery(GET_PRODUCTS, getProducts);
-  
+
   yield takeLatest(CREATE_PRODUCT, createProduct);
   yield takeLatest(UPDATE_PRODUCT, updateProduct);
   yield takeLatest(DELETE_PRODUCT, deleteProduct);

@@ -116,11 +116,16 @@ const Router = () => {
         },
         {
           path: 'orders',
-          element: (
-            <AccessGuard accessConditions={root.orders}>
-              <OrderList />
-            </AccessGuard>
-          ),
+          children: [
+            {
+              path: '',
+              element: (
+                <AccessGuard accessConditions={root.orders}>
+                  <OrderList />
+                </AccessGuard>
+              ),
+            },
+          ],
         },
         {
           path: 'access-control',
@@ -213,8 +218,8 @@ const AccountList = PageLoader(lazy(() => import('../pages/account/AccountList')
 const AccountCreate = PageLoader(lazy(() => import('../pages/account/AccountCreate')));
 const Categories = PageLoader(lazy(() => import('../pages/product/Categories')));
 const ProductList = PageLoader(lazy(() => import('../pages/product/ProductList')));
-const OrderList = PageLoader(lazy(() => import('../pages/order/OrderList')));
 const ProductCreate = PageLoader(lazy(() => import('../pages/product/ProductCreate')));
+const OrderList = PageLoader(lazy(() => import('../pages/order/OrderList')));
 const Roles = PageLoader(lazy(() => import('../pages/access-control/Roles')));
 const Resources = PageLoader(lazy(() => import('../pages/access-control/Resources')));
 const Operations = PageLoader(lazy(() => import('../pages/access-control/Operations')));

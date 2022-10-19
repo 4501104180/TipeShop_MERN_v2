@@ -8,6 +8,44 @@ const Product = require('../models/Product');
 const { fNumberWithSuffix } = require('../../utils/formatNumber');
 
 class OrdersAPI {
+	// [GET] /orders/all
+	async findAllOrders(req, res, next) {
+		try {
+			const orders = await Order.find().select([
+				'_id',
+				'customer_id',
+				'shipping_address',
+				'payment_method',
+				'items',
+				'price_summary',
+				'tracking_infor',
+				'note',
+			]);
+
+			res.status(200).json({
+				data: orders,
+			});
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+	// [GET] /orders/all/:_id
+	async findOrderById(req, res, next) {
+		try {
+			let { _id } = req.params;
+			_id = mongoose.Types.ObjectId(_id);
+			console.log(_id);
+			const order = await Order.findOne({
+				_id,
+			});
+
+			res.status(200).json(order);
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
 	// [GET] /orders?page&limit&[status][search]
 	async findByStatus(req, res, next) {
 		try {
@@ -53,9 +91,10 @@ class OrdersAPI {
 		try {
 			let customer_id = req.account._id;
 			customer_id = mongoose.Types.ObjectId(customer_id);
+			console.log(customer_id);
 			let { _id } = req.params;
 			_id = mongoose.Types.ObjectId(_id);
-
+			console.log(_id);
 			const order = await Order.findOne({
 				_id,
 				customer_id,
@@ -235,6 +274,85 @@ class OrdersAPI {
 					'tracking_infor.status_text': status_text,
 					'tracking_infor.time': Date.now(),
 					note,
+				},
+				{
+					new: true,
+				}
+			);
+
+			res.status(200).json({
+				msg: 'Edit status successfully!',
+				order,
+			});
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+
+	// [PUT] /orders/:_id
+	/*
+		_id: ObjectId as String,
+		new_status: String,
+	*/
+	async update(req, res, next) {
+		try {
+			let { _id } = req.params;
+			_id = mongoose.Types.ObjectId(_id);
+			let { new_status } = req.body;
+			if (!new_status) {
+				next({ status: 400, msg: 'Please do not re-select old data' });
+				return;
+			}
+			const current = await Order.findOne({
+				_id,
+			}).select('tracking_infor items');
+			// Processing new_status
+			let status_text = 'Pending processing';
+			switch (new_status) {
+				case 'processing':
+					status_text = 'Pending processing';
+					break;
+				case 'transporting':
+					status_text = 'Being transported';
+					break;
+				case 'delivered':
+					status_text = 'Order delivered';
+					break;
+				case 'canceled':
+					// return product quantity
+					await Promise.all(
+						current.items.map(async (item) => {
+							const { _id, quantity } = item;
+							const product = await Product.findOne({
+								_id,
+							}).select('quantity quantity_sold');
+							const newQuantity = product.quantity + quantity;
+							const newQuantitySold = product.quantity_sold.value - quantity;
+							product.quantity = newQuantity;
+							product.quantity_sold.value = newQuantitySold;
+							product.quantity_sold.text = fNumberWithSuffix(newQuantitySold, 1) + ' Sold';
+							await product.save();
+						})
+					);
+
+					status_text = 'Order has been canceled';
+					break;
+				default:
+					// refresh status
+					new_status = 'processing';
+					status_text = 'Pending processing';
+					break;
+			}
+
+			const order = await Order.findOneAndUpdate(
+				{
+					_id,
+				},
+				{
+					'tracking_infor.status': new_status,
+					'tracking_infor.status_text': status_text,
+					'tracking_infor.time': Date.now(),
 				},
 				{
 					new: true,

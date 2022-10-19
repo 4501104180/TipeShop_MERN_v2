@@ -5,13 +5,15 @@ import { ResourceForm, OperationForm, RoleForm } from './access-control';
 import { CategoryForm } from './product/';
 // hooks
 import useDrawer from '../hooks/useDrawer';
+import OrderForm from './order/OrderForm';
 
 const components = {
   default: () => null,
   roleForm: (props?: any) => <RoleForm {...props} />,
   resourceForm: (props?: any) => <ResourceForm {...props} />,
   operationForm: (props?: any) => <OperationForm {...props} />,
-  categoryForm: (props?: any) => <CategoryForm {...props} />, 
+  categoryForm: (props?: any) => <CategoryForm {...props} />,
+  orderForm: (props?: any) => <OrderForm {...props} />,
 };
 
 export type ComponentKey = keyof typeof components;

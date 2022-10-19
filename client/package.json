@@ -38,6 +38,7 @@
     "react-scripts": "5.0.1",
     "react-scroll": "^1.8.7",
     "react-slick": "^0.29.0",
+    "sharethis-reactjs": "^1.6.0",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.5.2",
     "stream-browserify": "^3.0.0",

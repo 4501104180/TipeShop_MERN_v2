@@ -15,6 +15,7 @@ import type { Resources, Resource, Permission } from '../models';
 // redux
 import { getAccountsAction } from '../redux/actions/account';
 import { getCategoriesAction, getProductsAction } from '../redux/actions/product';
+import { getOrdersAction } from '../redux/actions/order';
 // routes
 import { PATH_DASHBOARD } from '../routes/path';
 // utils
@@ -112,12 +113,13 @@ export const generateResources = (resources: Resource[]): ResourceConfig[] => {
       ],
     }) ||
       null,
-    (root['orders'] && {
-      id: root['orders']._id,
-      locked: root['orders'].locked,
-      key: PATH_DASHBOARD.orders,
-      label: root['orders'].name,
+    (root.orders && {
+      id: root.orders._id,
+      locked: root.orders.locked,
+      key: getSubKeyByDeepLevel(1, PATH_DASHBOARD.orders.root),
+      label: root.orders.name,
       icon: <ShoppingOutlined />,
+      fetching: getOrdersAction({}),
     }) ||
       null,
     (root['access control'] && {
