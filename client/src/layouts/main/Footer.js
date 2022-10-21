@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Typography, Divider } from '@mui/material';
+import { Box, Stack, Typography, Divider, Link } from '@mui/material';
 
 const CUSTOMER_SUPPORT = [
 	'Hotline: 1999-9999 (1000 VND/minute, 8-21 hours including Saturday and Sunday)',
@@ -36,13 +36,21 @@ const PAYMENT_METHODS = [
 
 const CONNECTS = [
 	{
+		name: 'Facebook',
 		image:
 			'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Facebook_logo_36x36.svg/2048px-Facebook_logo_36x36.svg.png',
+		url: 'https://www.facebook.com/people/DOT-Shop/100067030783697/?sk=following',
 	},
-	{ image: 'https://assets.materialup.com/uploads/5199f7ce-bb8c-4e39-95b0-5f10b67e8ec4/avatar.jpg' },
 	{
+		name: 'Youtube',
+		image: 'https://assets.materialup.com/uploads/5199f7ce-bb8c-4e39-95b0-5f10b67e8ec4/avatar.jpg',
+		url: 'https://www.youtube.com/channel/UC4DP1ddc5uwkOsgZlvwsmKQ?view_as=subscriber',
+	},
+	{
+		name: 'Zalo',
 		image:
 			'https://inkythuatso.com/uploads/thumbnails/800/2021/09/zalo-logo-inkythuatso-14-15-05-01.jpg',
+		url: 'https://zalo.me/0586181641',
 	},
 ];
 
@@ -111,13 +119,15 @@ const Footer = () => (
 				</Typography>
 				<StyledGrid>
 					{CONNECTS.map((item, index) => (
-						<Box
-							key={index}
-							component="img"
-							src={item.image}
-							alt=""
-							sx={{ width: '32px', height: '32px', borderRadius: '50%' }}
-						/>
+						<Link href={item.url}>
+							<Box
+								key={index}
+								component="img"
+								src={item.image}
+								alt={item.name}
+								sx={{ width: '32px', height: '32px', borderRadius: '50%' }}
+							/>
+						</Link>
 					))}
 				</StyledGrid>
 				<Stack>

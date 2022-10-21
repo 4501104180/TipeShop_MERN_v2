@@ -30,6 +30,15 @@ class ResourcesAPI {
 					},
 				},
 				{ $sort: { 'children.level': -1 } },
+				// get the operations of parent
+				{
+					$lookup: {
+						from: 'operations',
+						localField: 'operations',
+						foreignField: '_id',
+						as: 'operations',
+					},
+				},
 				// get the operations of children
 				{
 					$lookup: {

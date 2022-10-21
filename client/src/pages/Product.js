@@ -10,10 +10,7 @@ import {
 	Star,
 	More,
 } from '@mui/icons-material';
-import { InlineReactionButtons } from 'sharethis-reactjs';
 import { InlineShareButtons } from 'sharethis-reactjs';
-import { StickyShareButtons } from 'sharethis-reactjs';
-import { InlineFollowButtons } from 'sharethis-reactjs';
 
 // apis
 import productApi from '../apis/productApi';

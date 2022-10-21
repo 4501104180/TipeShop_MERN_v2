@@ -131,23 +131,23 @@ const OrderList = ({ actionsAllowed }: ActionsPassedGuardProps) => {
         const { _id } = record;
         return (
           <Space size="middle" align="center">
-            {/* {actionsAllowed.includes('change') && ( */}
-            <Tag
-              icon={<EditOutlined />}
-              color="success"
-              style={{ cursor: 'pointer' }}
-              onClick={() =>
-                openDrawer({
-                  key: 'orderForm',
-                  title: `Update order: [#${capitalize(_id)}]`,
-                  props: { order: record },
-                  size: 'large',
-                })
-              }
-            >
-              Change
-            </Tag>
-            {/* )} */}
+            {actionsAllowed.includes('change') && (
+              <Tag
+                icon={<EditOutlined />}
+                color="success"
+                style={{ cursor: 'pointer' }}
+                onClick={() =>
+                  openDrawer({
+                    key: 'orderForm',
+                    title: `Update order: [#${capitalize(_id)}]`,
+                    props: { order: record },
+                    size: 'large',
+                  })
+                }
+              >
+                Change
+              </Tag>
+            )}
           </Space>
         );
       },
