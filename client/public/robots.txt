@@ -1,0 +1,4 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Sitemap:https://tipe-client-v2.vercel.app/sitemap.xml

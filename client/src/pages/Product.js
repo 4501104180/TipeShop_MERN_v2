@@ -114,6 +114,7 @@ const Product = () => {
 											'messenger',
 											'facebook',
 											'twitter',
+											'linkedin',
 										],
 										padding: 12, // padding within buttons (INTEGER)
 										radius: 4, // the corner radius on each button (INTEGER)

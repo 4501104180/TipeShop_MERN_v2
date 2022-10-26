@@ -4,6 +4,7 @@ import { Link } from 'react-scroll';
 import { styled } from '@mui/material/styles';
 import { Stack, Typography, Chip, Tooltip } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
+import MetaTags from 'react-meta-tags';
 
 // components
 import Stars from '../Stars';
@@ -96,6 +97,12 @@ const Information = ({ information }) => {
 	};
 	return (
 		<RootStyle>
+			<MetaTags>
+				<title>{name}</title>
+				<meta property="og:title" content={name} />
+				{/* <meta name="description" content={de} />
+				<meta property="og:image" content="path/to/image.jpg" /> */}
+			</MetaTags>
 			<Typography variant="h6">{name}</Typography>
 			<Stack spacing={1}>
 				<Stack direction="row" alignItems="center" spacing={1}>
