@@ -12,7 +12,9 @@ class DashboardAPI {
 			const totalUser = await Account.count();
 			const sales = await Order.aggregate([
 				{
-					$match: {},
+					$match: {
+						'tracking_infor.status': 'delivered',
+					},
 				},
 				{
 					$project: {
@@ -210,7 +212,9 @@ class DashboardAPI {
 		try {
 			const totalSales = await Order.aggregate([
 				{
-					$match: {},
+					$match: {
+						'tracking_infor.status': 'delivered',
+					},
 				},
 				{
 					$project: {
