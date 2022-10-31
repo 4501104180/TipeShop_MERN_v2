@@ -39,7 +39,7 @@ const CONNECTS = [
 		name: 'Facebook',
 		image:
 			'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Facebook_logo_36x36.svg/2048px-Facebook_logo_36x36.svg.png',
-		url: 'https://www.facebook.com/people/DOT-Shop/100067030783697/?sk=following',
+		url: 'https://www.facebook.com/TipeShop2022',
 	},
 	{
 		name: 'Youtube',

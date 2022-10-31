@@ -32,6 +32,12 @@ const productApi = {
 		const url = `/products/ranking/${type}/${page}/${number}`;
 		return axiosInstance.get(url);
 	},
+
+	// [GET] /products/search/:keyword
+	findByKeyword: (keyword) => {
+		const url = `/products/search/${keyword}`;
+		return axiosInstance.get(url);
+	},
 };
 
 export default productApi;

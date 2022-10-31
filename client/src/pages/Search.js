@@ -5,38 +5,29 @@ import { useParams } from 'react-router-dom';
 //Components
 import Page from '../components/Page';
 import Teleport from '../components/Teleport';
-import ProductsViewMore from '../components/ProductsViewMore';
+import ProductsViewMore from '../components/ProductSearch';
 
-const ViewMore = () => {
+const Search = () => {
 	const [title, setTitle] = useState('');
-	const { type } = useParams();
+	const { keyword } = useParams();
 	useEffect(() => {
 		const getTitle = () => {
-			switch (type) {
-				case 'sold':
-					setTitle('🛍  Hot selling products');
-					break;
-				case 'favorite':
-					setTitle('💖  Most likes products');
-					break;
-				case 'view':
-					setTitle('👀  Top view products');
-					break;
-				default:
-					setTitle('It Nothing');
-					break;
+			if (keyword) {
+				setTitle('Search keyword: "' + keyword + '"');
+			} else {
+				setTitle('It Nothing');
 			}
 		};
 		getTitle();
-	}, [type]);
+	}, [keyword]);
 	return (
 		<Page title="Tipe Shop - Buy online, good price, good quality, fast shipping">
 			<Container>
 				<Teleport />
-				<ProductsViewMore title={title} type={type} />
+				<ProductsViewMore title={title} type={keyword} />
 			</Container>
 		</Page>
 	);
 };
 
-export default ViewMore;
+export default Search;

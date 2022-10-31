@@ -12,6 +12,7 @@ export const PATH_MAIN = {
 	news: '/news',
 	invoiceLookup: '/invoice/lookup',
 	viewmore: '/viewmore',
+	search: '/search',
 };
 
 export const PATH_CUSTOMER = {

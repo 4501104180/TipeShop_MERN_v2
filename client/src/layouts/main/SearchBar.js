@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
@@ -6,14 +8,23 @@ const propTypes = {
 	sx: PropTypes.object,
 };
 
-const SearchBar = ({ sx }) => (
-	<Box sx={{ position: 'relative', height: 40, ...sx }}>
-		<SearchField placeholder="Enter what are you looking for here ... <3" />
-		<SearchButton>
-			<i className="bi bi-search"></i>
-		</SearchButton>
-	</Box>
-);
+const SearchBar = ({ sx }) => {
+	const [search, setSearch] = useState('');
+	const handleChange = (e) => {
+		const value = e.target.value;
+		setSearch(value);
+	};
+	return (
+		<Box sx={{ position: 'relative', height: 40, ...sx }}>
+			<SearchField placeholder="Enter what are you looking for here ... <3" onChange={handleChange} />
+			<Link to={`/search/${search}`} underline="hover">
+				<SearchButton>
+					<i className="bi bi-search"></i>
+				</SearchButton>
+			</Link>
+		</Box>
+	);
+};
 
 const SearchField = styled('input')(({ theme }) => ({
 	width: '100%',
