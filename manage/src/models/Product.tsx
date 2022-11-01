@@ -20,7 +20,7 @@ export interface Warranty {
   name: string;
   value: string;
 }
-export interface Specifications {
+export interface Specification {
   _id: string;
   name: string;
   value: string;
@@ -32,8 +32,8 @@ export interface Product {
   quantity: string | null;
   category: Category['_id'] | null;
   // attribute_values: AttributeValue[];
-  // warranty_infor: Warranty[];
-  // specifications: Specifications[];
+  warranty_infor: Warranty | null;
+  specifications: Specification | null;
   limit: number | null;
   discount: string | null;
   discount_rate: string | null;

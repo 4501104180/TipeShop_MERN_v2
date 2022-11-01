@@ -11,12 +11,14 @@ import type {
   DeleteProductResponse,
   FindAllCategoriesResponse,
   FindAllProductsResponse,
+  FindAllWarrantyResponse,
+  FindAllSpecificationResponse,
   UpdateCategoryResponse,
   UpdateProductResponse,
 } from '../../apis/productApi';
 import productApi from '../../apis/productApi';
 // models
-import type { Category, Product } from '../../models';
+import type { Category, Product, Warranty, Specification } from '../../models';
 // redux
 import { RootState } from '../store';
 import {
@@ -29,7 +31,11 @@ import {
   DELETE_PRODUCT,
   DeletProductPayload,
   GetProductsPayload,
+  GetWarrantiesPayload,
+  GetSpecificationsPayload,
   GET_PRODUCTS,
+  GET_WARRANTIES,
+  GET_SPECIFICATIONS,
   UpdateCategoryPayload,
   UpdateProductPayload,
   UPDATE_CATEGORY,
@@ -43,6 +49,8 @@ export interface ProductState {
   lastAction: 'create' | 'update' | 'delete' | undefined;
   categories: Category[];
   products: Product[];
+  warranties: Warranty[];
+  specifications: Specification[];
 }
 const initialState: ProductState = {
   isLoading: false,
@@ -50,6 +58,8 @@ const initialState: ProductState = {
   lastAction: undefined,
   categories: [],
   products: [],
+  warranties: [],
+  specifications: [],
 };
 const categoriesChanged = (
   categories: Category[],
@@ -146,6 +156,14 @@ const slice = createSlice({
     },
     deleteProductSuccess: (state, action: PayloadAction<Product>) => {
       state.products = state.products.filter((product) => product._id !== action.payload._id);
+    },
+    getWarrantiesSucess: (state, action: PayloadAction<FindAllWarrantyResponse>) => {
+      const { data } = action.payload;
+      state.warranties = data;
+    },
+    getSpecificationsSucess: (state, action: PayloadAction<FindAllSpecificationResponse>) => {
+      const { data } = action.payload;
+      state.specifications = data;
     },
   },
 });
@@ -277,6 +295,36 @@ function* deleteProduct(action: PayloadAction<DeletProductPayload>) {
     }
   }
 }
+
+function* getWarranties(action: PayloadAction<GetWarrantiesPayload>) {
+  try {
+    yield put(actions.startLoading());
+    const response: FindAllWarrantyResponse = yield call(productApi.findAllWarranty);
+    const { data } = response;
+    yield put(actions.getWarrantiesSucess({ data }));
+    yield put(actions.actionSuccess());
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      yield put(actions.hasError(error.response?.statusText));
+      message.error(error.response?.statusText);
+    }
+  }
+}
+
+function* getSpecifications(action: PayloadAction<GetSpecificationsPayload>) {
+  try {
+    yield put(actions.startLoading());
+    const response: FindAllSpecificationResponse = yield call(productApi.findAllSpecification);
+    const { data } = response;
+    yield put(actions.getSpecificationsSucess({ data }));
+    yield put(actions.actionSuccess());
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      yield put(actions.hasError(error.response?.statusText));
+      message.error(error.response?.statusText);
+    }
+  }
+}
 export function* productSaga() {
   yield takeEvery(GET_CATEGORIES, getCategories);
 
@@ -289,4 +337,7 @@ export function* productSaga() {
   yield takeLatest(CREATE_PRODUCT, createProduct);
   yield takeLatest(UPDATE_PRODUCT, updateProduct);
   yield takeLatest(DELETE_PRODUCT, deleteProduct);
+
+  yield takeEvery(GET_WARRANTIES, getWarranties);
+  yield takeEvery(GET_SPECIFICATIONS, getSpecifications);
 }

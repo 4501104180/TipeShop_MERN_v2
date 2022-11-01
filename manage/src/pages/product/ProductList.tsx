@@ -153,7 +153,9 @@ const ProductList = ({ actionsAllowed }: ActionsPassedGuardProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
-  const { isLoading, products } = useAppSelector(selectProduct);
+  const { isLoading, products, warranties, specifications } = useAppSelector(selectProduct);
+  console.log(warranties);
+  console.log(specifications);
   const actionsAccessible: ColumnsType<Product> = [
     {
       title: 'Actions',

@@ -40,7 +40,6 @@ const keys = scrollKeys.reduce((accumulator, current) => {
 
 const ProductCreate = () => {
   const { products } = useAppSelector(selectProduct);
-  console.log(products);
   const isEdit = window.location.pathname.indexOf('/edit') >= 0;
   const _id = window.location.pathname.split('/').pop();
   const propsProduct: ProductFormProps & { backTo: string } = {

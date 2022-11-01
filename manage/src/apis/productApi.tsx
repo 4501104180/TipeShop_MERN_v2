@@ -1,7 +1,15 @@
 import axiosInstance from './axiosInstance';
 
 // models
-import type { ListResponse, Category, StatusResponse, UploadFileType, Product } from '../models';
+import type {
+  ListResponse,
+  Category,
+  StatusResponse,
+  UploadFileType,
+  Product,
+  Warranty,
+  Specification,
+} from '../models';
 export interface CheckExistBody {
   names: Category['name'][];
 }
@@ -53,6 +61,9 @@ export interface UpdateProductResponse extends CreateProductResponse {}
 
 export interface DeleteProductParams extends Pick<Product, '_id'> {}
 export interface DeleteProductResponse extends CreateProductResponse {}
+
+export interface FindAllWarrantyResponse extends ListResponse<Warranty> {}
+export interface FindAllSpecificationResponse extends ListResponse<Specification> {}
 
 const productApi = {
   // [GET] /categories
@@ -143,6 +154,18 @@ const productApi = {
     const { _id } = params;
     const url = `/products/${_id}`;
     return axiosInstance.delete(url);
+  },
+
+  // [GET] /products/
+  findAllWarranty: (): Promise<FindAllWarrantyResponse> => {
+    const url = '/warranties';
+    return axiosInstance.get(url);
+  },
+
+  // [GET] /specifications/
+  findAllSpecification: (): Promise<FindAllSpecificationResponse> => {
+    const url = '/specifications';
+    return axiosInstance.get(url);
   },
 };
 export default productApi;

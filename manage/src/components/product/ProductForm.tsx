@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Button, Col, Input, message, Space, Switch, Typography, Row } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
@@ -8,11 +8,16 @@ import { useFormik, FormikProvider, Form } from 'formik';
 import Box from '../Box';
 import CategorySelect from './CategorySelect';
 // models
-import { Category, Product, UploadFileType } from '../../models';
+import { Category, Product, UploadFileType, Warranty, Specification } from '../../models';
 import { UploadMultipleFile } from '../_external_/dropzone';
 // redux
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { CreateProductPayload, updateProductAction } from '../../redux/actions/product';
+import {
+  CreateProductPayload,
+  getWarrantiessAction,
+  getSpecificationsAction,
+  updateProductAction,
+} from '../../redux/actions/product';
 import { createProductsAction } from '../../redux/actions/product';
 import { clearAction, selectProduct } from '../../redux/slices/product';
 // utils
@@ -21,18 +26,28 @@ import { humanFileSize } from '../../utils/formatNumber';
 import { capitalize } from '../../utils/formatString';
 import { useNavigate } from 'react-router-dom';
 import { PATH_DASHBOARD } from '../../routes/path';
-
+import productApi from '../../apis/productApi';
 const { Text } = Typography;
 
 export interface ProductFormProps {
   product?: Product;
   category?: Category['_id'];
+  warranty?: any;
+  specification?: any;
 }
 
-const ProductForm = ({ product, category }: ProductFormProps) => {
+const ProductForm = ({ product, warranty, specification }: ProductFormProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { lastAction, categories } = useAppSelector(selectProduct);
+  const { lastAction, categories, warranties, specifications } = useAppSelector(selectProduct);
+  console.log(warranties);
+  if (warranties.length == 0) {
+    dispatch(getWarrantiessAction({}));
+  }
+  console.log(specifications);
+  if (specifications.length == 0) {
+    dispatch(getSpecificationsAction({}));
+  }
   const initialValues: CreateProductPayload = {
     name: capitalize(product?.name) || '',
     images: product?.images || [],

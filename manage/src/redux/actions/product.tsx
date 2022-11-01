@@ -22,6 +22,9 @@ export const CREATE_PRODUCT = 'CREATE_PRODUCT';
 export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
 
+export const GET_WARRANTIES = 'GET_WARRANTIES';
+export const GET_SPECIFICATIONS = 'GET_SPECIFICATIONS';
+
 export interface GetCategoriesPayload {}
 export const getCategoriesAction = (payload: GetCategoriesPayload) => {
   return {
@@ -75,6 +78,22 @@ export type DeletProductPayload = DeleteProductParams;
 export const deleteProductAction = (payload: DeletProductPayload) => {
   return {
     type: DELETE_PRODUCT,
+    payload,
+  };
+};
+
+export interface GetWarrantiesPayload {}
+export const getWarrantiessAction = (payload: GetWarrantiesPayload) => {
+  return {
+    type: GET_WARRANTIES,
+    payload,
+  };
+};
+
+export interface GetSpecificationsPayload {}
+export const getSpecificationsAction = (payload: GetSpecificationsPayload) => {
+  return {
+    type: GET_SPECIFICATIONS,
     payload,
   };
 };
