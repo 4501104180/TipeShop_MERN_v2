@@ -62,6 +62,7 @@ const ProductForm = ({ product }: ProductFormProps) => {
     warranty_infor: product?.warranty_infor || '',
     specifications: product?.specifications || '',
     limit: product?.limit || null,
+    youtube_url: product?.youtube_url || '',
     description: product?.description || '',
     discount: product?.discount || '',
     discount_rate: product?.discount_rate || '',
@@ -169,7 +170,22 @@ const ProductForm = ({ product }: ProductFormProps) => {
                   onChange={handleSelectCategory}
                 />
               </Space>
+              <Stack>
               <Space direction="vertical" size="small">
+                <Text strong>Youtube URL:</Text>
+                <Input
+                  size="middle"
+                  placeholder="Enter Youtube URL..."
+                  {...getFieldProps('youtube_url')}
+                  status={Boolean(touched.youtube_url && errors.youtube_url) ? 'error' : ''}
+                />
+                {touched.youtube_url && (
+                  <Text strong type="danger">
+                    {errors.youtube_url}
+                  </Text>
+                )}
+              </Space>
+                <Space direction="vertical" size="small">
                   <Text strong>Attribute Values:</Text>
                   <Select
                     value={values.attribute_values}
@@ -190,6 +206,7 @@ const ProductForm = ({ product }: ProductFormProps) => {
                     })}
                   </Select>
                 </Space>
+              </Stack>
               <Stack>
                 <Space direction="vertical" size="small">
                   <Text strong>Quantity:</Text>
@@ -220,7 +237,6 @@ const ProductForm = ({ product }: ProductFormProps) => {
                   )}
                 </Space>
               </Stack>
-
               <Stack>
                 <Space direction="vertical" size="small">
                   <Text strong>Warranty:</Text>
