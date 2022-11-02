@@ -570,7 +570,6 @@ class ProductsAPI {
 		try {
 			const { warranty_infor, specifications, attribute_values, ...body } = req.body;
 			const images = req.files;
-			console.log(attribute_values);
 			// handle images
 			if (!images) {
 				next({ status: 400, msg: 'Image field is required!' });

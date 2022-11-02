@@ -39,6 +39,7 @@ export interface Product {
   discount_rate: string | null;
   original_price: string | null;
   price: string | null;
+  youtube_url: string | null,
   description: string | undefined;
   inventory_status: string;
   shippable: boolean;
