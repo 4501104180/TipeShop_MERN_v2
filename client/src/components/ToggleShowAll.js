@@ -53,7 +53,7 @@ const Input = styled('input')(({ theme }) => ({
 		boxShadow: '0px -2px 7px rgb(233 129 129)',
 	},
 	'&:checked ~ div': {
-		maxHeight: '1000px',
+		maxHeight: 'fit-content',
 	},
 }));
 
