@@ -15,10 +15,11 @@ import type {
   FindAllSpecificationResponse,
   UpdateCategoryResponse,
   UpdateProductResponse,
+  FindAllAttributeValueResponse,
 } from '../../apis/productApi';
 import productApi from '../../apis/productApi';
 // models
-import type { Category, Product, Warranty, Specification } from '../../models';
+import type { Category, Product, Warranty, Specification, AttributeValue } from '../../models';
 // redux
 import { RootState } from '../store';
 import {
@@ -40,6 +41,8 @@ import {
   UpdateProductPayload,
   UPDATE_CATEGORY,
   UPDATE_PRODUCT,
+  GetAttributeValuesPayload,
+  GET_ATTRIBUTEVALUES,
 } from '../actions/product';
 import { GET_CATEGORIES } from '../actions/product';
 
@@ -49,6 +52,7 @@ export interface ProductState {
   lastAction: 'create' | 'update' | 'delete' | undefined;
   categories: Category[];
   products: Product[];
+  attribute_values: AttributeValue[];
   warranties: Warranty[];
   specifications: Specification[];
 }
@@ -58,6 +62,7 @@ const initialState: ProductState = {
   lastAction: undefined,
   categories: [],
   products: [],
+  attribute_values: [],
   warranties: [],
   specifications: [],
 };
@@ -156,6 +161,10 @@ const slice = createSlice({
     },
     deleteProductSuccess: (state, action: PayloadAction<Product>) => {
       state.products = state.products.filter((product) => product._id !== action.payload._id);
+    },
+    getAttributeValuesSucess: (state, action: PayloadAction<FindAllAttributeValueResponse>) => {
+      const { data } = action.payload;
+      state.attribute_values = data;
     },
     getWarrantiesSucess: (state, action: PayloadAction<FindAllWarrantyResponse>) => {
       const { data } = action.payload;
@@ -296,6 +305,21 @@ function* deleteProduct(action: PayloadAction<DeletProductPayload>) {
   }
 }
 
+function* getAttributeValues(action: PayloadAction<GetAttributeValuesPayload>) {
+  try {
+    yield put(actions.startLoading());
+    const response: FindAllAttributeValueResponse = yield call(productApi.findAllAttributeValue);
+    const { data } = response;
+    yield put(actions.getAttributeValuesSucess({ data }));
+    yield put(actions.actionSuccess());
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      yield put(actions.hasError(error.response?.statusText));
+      message.error(error.response?.statusText);
+    }
+  }
+}
+
 function* getWarranties(action: PayloadAction<GetWarrantiesPayload>) {
   try {
     yield put(actions.startLoading());
@@ -338,6 +362,7 @@ export function* productSaga() {
   yield takeLatest(UPDATE_PRODUCT, updateProduct);
   yield takeLatest(DELETE_PRODUCT, deleteProduct);
 
+  yield takeEvery(GET_ATTRIBUTEVALUES, getAttributeValues);
   yield takeEvery(GET_WARRANTIES, getWarranties);
   yield takeEvery(GET_SPECIFICATIONS, getSpecifications);
 }

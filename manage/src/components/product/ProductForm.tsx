@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
-import { Button, Col, Input, message, Space, Switch, Typography, Row } from 'antd';
-import TextArea from 'antd/lib/input/TextArea';
+import { Button, Col, Input, message, Space, Switch, Typography, Row, Select } from 'antd';
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import { useFormik, FormikProvider, Form } from 'formik';
+import { Editor } from '@tinymce/tinymce-react';
 // components
 import Box from '../Box';
 import CategorySelect from './CategorySelect';
@@ -17,6 +17,7 @@ import {
   getWarrantiessAction,
   getSpecificationsAction,
   updateProductAction,
+  getAttributeValuesAction,
 } from '../../redux/actions/product';
 import { createProductsAction } from '../../redux/actions/product';
 import { clearAction, selectProduct } from '../../redux/slices/product';
@@ -26,26 +27,30 @@ import { humanFileSize } from '../../utils/formatNumber';
 import { capitalize } from '../../utils/formatString';
 import { useNavigate } from 'react-router-dom';
 import { PATH_DASHBOARD } from '../../routes/path';
-import productApi from '../../apis/productApi';
+
+const { Option } = Select;
 const { Text } = Typography;
 
 export interface ProductFormProps {
   product?: Product;
   category?: Category['_id'];
-  warranty?: any;
-  specification?: any;
+  warranty?: Warranty['_id'];
+  specification?: Specification['_id'];
 }
 
-const ProductForm = ({ product, warranty, specification }: ProductFormProps) => {
+const ProductForm = ({ product }: ProductFormProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { lastAction, categories, warranties, specifications } = useAppSelector(selectProduct);
-  console.log(warranties);
-  if (warranties.length == 0) {
+  const { lastAction, categories, attribute_values, warranties, specifications } =
+    useAppSelector(selectProduct);
+  if (attribute_values.length === 0) {
+    dispatch(getAttributeValuesAction({}));
+  }
+  console.log(attribute_values);
+  if (warranties.length === 0) {
     dispatch(getWarrantiessAction({}));
   }
-  console.log(specifications);
-  if (specifications.length == 0) {
+  if (specifications.length === 0) {
     dispatch(getSpecificationsAction({}));
   }
   const initialValues: CreateProductPayload = {
@@ -53,6 +58,9 @@ const ProductForm = ({ product, warranty, specification }: ProductFormProps) => 
     images: product?.images || [],
     quantity: product?.quantity || '',
     category: product?.category || null,
+    attribute_values: product?.attribute_values || '',
+    warranty_infor: product?.warranty_infor || '',
+    specifications: product?.specifications || '',
     limit: product?.limit || null,
     description: product?.description || '',
     discount: product?.discount || '',
@@ -116,6 +124,15 @@ const ProductForm = ({ product, warranty, specification }: ProductFormProps) => 
   const handleSelectCategory = (_id: string | null | undefined) => {
     setFieldValue('category', _id);
   };
+  const handleChangeAttributeValue = (_id: string | null | undefined) => {
+    setFieldValue('attribute_values', _id);
+  };
+  const handleChangeWarranty = (_id: string | null | undefined) => {
+    setFieldValue('warranty_infor', _id);
+  };
+  const handleChangeSpecification = (_id: string | null | undefined) => {
+    setFieldValue('specifications', _id);
+  };
   const handleInventoryStatus = (checked: boolean) => {
     checked
       ? setFieldValue('inventory_status', 'locked')
@@ -152,6 +169,27 @@ const ProductForm = ({ product, warranty, specification }: ProductFormProps) => 
                   onChange={handleSelectCategory}
                 />
               </Space>
+              <Space direction="vertical" size="small">
+                  <Text strong>Attribute Values:</Text>
+                  <Select
+                    value={values.attribute_values}
+                    mode="multiple"
+                    allowClear
+                    showSearch
+                    placeholder="Specify the attribute values of the product"
+                    style={{ width: '100%' }}
+                    onChange={handleChangeAttributeValue}
+                  >
+                    {attribute_values.map((attribute_value) => {
+                      const { _id, display_value } = attribute_value;
+                      return (
+                        <Option key={_id} value={_id}>
+                          {display_value}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Space>
               <Stack>
                 <Space direction="vertical" size="small">
                   <Text strong>Quantity:</Text>
@@ -180,6 +218,51 @@ const ProductForm = ({ product, warranty, specification }: ProductFormProps) => 
                       {errors.limit}
                     </Text>
                   )}
+                </Space>
+              </Stack>
+
+              <Stack>
+                <Space direction="vertical" size="small">
+                  <Text strong>Warranty:</Text>
+                  <Select
+                    value={values.warranty_infor}
+                    mode="multiple"
+                    allowClear
+                    showSearch
+                    placeholder="Specify the warranty of the product"
+                    style={{ width: '100%' }}
+                    onChange={handleChangeWarranty}
+                  >
+                    {warranties.map((warranty) => {
+                      const { _id, name } = warranty;
+                      return (
+                        <Option key={_id} value={_id}>
+                          {name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Space>
+                <Space direction="vertical" size="small">
+                  <Text strong>Specification:</Text>
+                  <Select
+                    value={values.specifications}
+                    mode="multiple"
+                    allowClear
+                    showSearch
+                    placeholder="Specify the specification of the product"
+                    style={{ width: '100%' }}
+                    onChange={handleChangeSpecification}
+                  >
+                    {specifications.map((specification) => {
+                      const { _id, name } = specification;
+                      return (
+                        <Option key={_id} value={_id}>
+                          {name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
                 </Space>
               </Stack>
               <Stack>
@@ -244,17 +327,29 @@ const ProductForm = ({ product, warranty, specification }: ProductFormProps) => 
               </Stack>
               <Space direction="vertical" size="small">
                 <Text strong>Description:</Text>
-                <TextArea
-                  size="large"
-                  placeholder="Enter description..."
-                  {...getFieldProps('description')}
-                  status={Boolean(touched.description && errors.description) ? 'error' : ''}
+                <Editor
+                  value={values.description}
+                  apiKey="of79izwrwc7h3ybvvp7pozd3dbz3m5y1oizh42h7h8zf4lsv"
+                  onEditorChange={(e) => {
+                    setFieldValue('description', e);
+                  }}
+                  init={{
+                    height: 500,
+                    menubar: false,
+                    plugins: [
+                      'advlist autolink lists link image charmap print preview anchor',
+                      'searchreplace visualblocks code fullscreen',
+                      'insertdatetime media table paste code help wordcount',
+                    ],
+                    toolbar:
+                      'undo redo | formatselect | ' +
+                      'bold italic backcolor | alignleft aligncenter ' +
+                      'alignright alignjustify | bullist numlist outdent indent | ' +
+                      'removeformat | help',
+                    content_style:
+                      'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                  }}
                 />
-                {touched.description && (
-                  <Text strong type="danger">
-                    {errors.description}
-                  </Text>
-                )}
               </Space>
               <Stack>
                 <Space>

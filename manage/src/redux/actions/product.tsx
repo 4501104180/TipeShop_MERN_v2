@@ -22,6 +22,7 @@ export const CREATE_PRODUCT = 'CREATE_PRODUCT';
 export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
 
+export const GET_ATTRIBUTEVALUES = 'GET_ATTRIBUTEVALUES';
 export const GET_WARRANTIES = 'GET_WARRANTIES';
 export const GET_SPECIFICATIONS = 'GET_SPECIFICATIONS';
 
@@ -81,7 +82,13 @@ export const deleteProductAction = (payload: DeletProductPayload) => {
     payload,
   };
 };
-
+export interface GetAttributeValuesPayload {}
+export const getAttributeValuesAction = (payload: GetAttributeValuesPayload) => {
+  return {
+    type: GET_ATTRIBUTEVALUES,
+    payload,
+  };
+};
 export interface GetWarrantiesPayload {}
 export const getWarrantiessAction = (payload: GetWarrantiesPayload) => {
   return {

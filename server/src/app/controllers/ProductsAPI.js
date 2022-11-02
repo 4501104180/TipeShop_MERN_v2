@@ -6,7 +6,6 @@ const AttributeValue = require('../models/AttributeValue');
 // utils
 const cloudinaryUpload = require('../../utils/cloudinaryUpload');
 const Category = require('../models/Category');
-const { Name } = require('selenium-webdriver/lib/command');
 
 class ProductsAPI {
 	// [GET] /products
@@ -569,9 +568,9 @@ class ProductsAPI {
 	*/
 	async create(req, res, next) {
 		try {
-			const { warranty_infor, specifications, ...body } = req.body;
+			const { warranty_infor, specifications, attribute_values, ...body } = req.body;
 			const images = req.files;
-
+			console.log(attribute_values);
 			// handle images
 			if (!images) {
 				next({ status: 400, msg: 'Image field is required!' });
@@ -584,14 +583,18 @@ class ProductsAPI {
 					imageObjs.push(public_id);
 				})
 			);
-
+			// handle attribute_value
+			const attribute_valueObjs = [];
+			attribute_values &&
+				attribute_values.map((attribute_value) => {
+					attribute_valueObjs.push(mongoose.Types.ObjectId(attribute_value));
+				});
 			// handle warranty
 			const warrantyObjs = [];
 			warranty_infor &&
 				warranty_infor.map((warranty) => {
 					warrantyObjs.push(mongoose.Types.ObjectId(warranty));
 				});
-
 			// handle specification
 			const specificationObjs = [];
 			specifications &&
@@ -602,6 +605,7 @@ class ProductsAPI {
 			const product = new Product({
 				...body,
 				images: imageObjs,
+				attribute_values: attribute_valueObjs,
 				warranty_infor: warrantyObjs,
 				specifications: specificationObjs,
 			});
@@ -629,9 +633,24 @@ class ProductsAPI {
 	async update(req, res, next) {
 		try {
 			let { _id } = req.params;
-			const { warranty_infor, specifications, ...body } = req.body;
+			const { name, warranty_infor, specifications, attribute_values, slug, ...body } = req.body;
 			const images = req.files;
-
+			const convertSlug = name
+				// Chuyển hết sang chữ thường
+				.toLowerCase()
+				// chuyển chuỗi sang unicode tổ hợp
+				.normalize('NFD')
+				// xóa các ký tự dấu sau khi tách tổ hợp
+				.replace(/[\u0300-\u036f]/g, '')
+				.replace(/[đĐ]/g, 'd')
+				// Xóa ký tự đặc biệt
+				.replace(/([^0-9a-z-\s])/g, '')
+				// Xóa khoảng trắng thay bằng ký tự -
+				.replace(/(\s+)/g, '-')
+				// Xóa ký tự - liên tiếp
+				.replace(/-+/g, '-')
+				// xóa phần dư - ở đầu & cuối
+				.replace(/^-+|-+$/g, '');
 			// handle images
 			if (!images) {
 				next({ status: 400, msg: 'Image field is required!' });
@@ -644,7 +663,12 @@ class ProductsAPI {
 					imageObjs.push(public_id);
 				})
 			);
-
+			// handle attribute_value
+			const attribute_valueObjs = [];
+			attribute_values &&
+				attribute_values.map((attribute_value) => {
+					attribute_valueObjs.push(mongoose.Types.ObjectId(attribute_value));
+				});
 			// handle warranty
 			const warrantyObjs = [];
 			warranty_infor &&
@@ -661,7 +685,15 @@ class ProductsAPI {
 
 			const product = await Product.findByIdAndUpdate(
 				_id,
-				{ images: imageObjs, warranty_infor: warrantyObjs, specifications: specificationObjs, ...body },
+				{
+					name,
+					images: imageObjs,
+					attribute_values: attribute_valueObjs,
+					warranty_infor: warrantyObjs,
+					specifications: specificationObjs,
+					slug: convertSlug,
+					...body,
+				},
 				{ new: true }
 			);
 			res.status(201).json({

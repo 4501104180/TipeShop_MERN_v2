@@ -9,6 +9,7 @@ import type {
   Product,
   Warranty,
   Specification,
+  AttributeValue,
 } from '../models';
 export interface CheckExistBody {
   names: Category['name'][];
@@ -39,11 +40,7 @@ export interface DeleteCategoryParams extends Pick<Category, '_id'> {}
 export interface DeleteCategoryResponse extends CreateCategoryResponse {}
 
 export interface FindAllProductsResponse extends ListResponse<Product> {}
-export interface CreateProductBody
-  extends Omit<
-    Product,
-    '_id' | 'images' | 'slug' | 'attribute_values' | 'warranty_infor' | 'specifications'
-  > {
+export interface CreateProductBody extends Omit<Product, '_id' | 'images' | 'slug'> {
   images: UploadFileType[];
 }
 export interface CreateProductResponse extends StatusResponse {
@@ -62,6 +59,7 @@ export interface UpdateProductResponse extends CreateProductResponse {}
 export interface DeleteProductParams extends Pick<Product, '_id'> {}
 export interface DeleteProductResponse extends CreateProductResponse {}
 
+export interface FindAllAttributeValueResponse extends ListResponse<AttributeValue> {}
 export interface FindAllWarrantyResponse extends ListResponse<Warranty> {}
 export interface FindAllSpecificationResponse extends ListResponse<Specification> {}
 
@@ -156,7 +154,13 @@ const productApi = {
     return axiosInstance.delete(url);
   },
 
-  // [GET] /products/
+  // [GET] /attributevalues/
+  findAllAttributeValue: (): Promise<FindAllAttributeValueResponse> => {
+    const url = '/attributevalues';
+    return axiosInstance.get(url);
+  },
+  
+  // [GET] /warranties/
   findAllWarranty: (): Promise<FindAllWarrantyResponse> => {
     const url = '/warranties';
     return axiosInstance.get(url);
