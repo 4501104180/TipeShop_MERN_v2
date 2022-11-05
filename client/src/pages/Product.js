@@ -54,6 +54,7 @@ const Product = () => {
 				attribute_values,
 				warranty_infor,
 				inventory_status,
+				youtube_url,
 				...parts
 			} = productResponse;
 			setProduct({
@@ -71,6 +72,7 @@ const Product = () => {
 					attribute_values,
 					warranty_infor,
 					inventory_status,
+					youtube_url,
 				},
 			});
 			setSimilarSection(similarProducts);
@@ -94,7 +96,7 @@ const Product = () => {
 						/>
 						<Wrapper id="information" sx={{ p: 0, mt: 0 }}>
 							<Stack direction={{ xs: 'column', sm: 'row', lg: 'row' }} justifyContent="space-between">
-								<ImageZoom images={product.images} />
+								<ImageZoom images={product.images} youtube={product?.information.youtube_url} />
 								<Information information={product.information} />
 							</Stack>
 						</Wrapper>
