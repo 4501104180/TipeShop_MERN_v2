@@ -34,6 +34,7 @@
     "react-image-lightbox": "^5.1.4",
     "react-lazy-load-image-component": "^1.5.4",
     "react-meta-tags": "^1.0.1",
+    "react-player": "^2.11.0",
     "react-redux": "^8.0.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
