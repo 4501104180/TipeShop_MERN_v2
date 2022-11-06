@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const path = require('path');
 
 // models
 const { Types, Account, Customer, Administrator } = require('../models/Account');
@@ -9,6 +10,7 @@ const Location = require('../models/Location');
 const cloudinaryUpload = require('../../utils/cloudinaryUpload');
 const { generateToken, verify } = require('../../utils/jwt');
 const { capitalize } = require('../../utils/formatString');
+const sendMail = require('../../utils/mailer');
 
 class AccountsAPI {
 	// [GET] /accounts/:type
@@ -48,51 +50,41 @@ class AccountsAPI {
 		}
 	}
 
+	// [GET] /accounts/verify-email/:id/:token
+	async verifyEmail(req, res, next) {
+		try {
+			const { id, token } = req.params;
+			const user = await Account.findOne({
+				id: id,
+				refreshToken: token,
+			});
+
+			if (!user) {
+				next({
+					status: 400,
+					msg: 'Invalid link!',
+				});
+				return;
+			}
+
+			user.is_email_verified = true;
+			await user
+				.save()
+				.then(() => {
+					res.redirect(`${process.env.APP_CLIENT}`);
+				})
+				.catch((err) => console.log(error));
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+
 	// [GET] /accounts/profile
 	async getProfile(req, res, next) {
 		try {
 			let { _id } = req.account;
 			_id = mongoose.Types.ObjectId(_id);
-
-			// const result = await Account.aggregate([
-			// 	{
-			// 		$match: { _id },
-			// 	},
-			// 	{
-			// 		$lookup: {
-			// 			from: 'roles',
-			// 			let: {
-			// 				roles: '$roles',
-			// 			},
-			// 			pipeline: [
-			// 				{
-			// 					$match: { $expr: { $in: ['$name', '$$roles'] } },
-			// 				},
-			// 			],
-			// 			as: 'roles',
-			// 		},
-			// 	},
-			// 	{
-			// 		$addFields: {
-			// 			permissions: {
-			// 				$reduce: {
-			// 					input: '$roles',
-			// 					initialValue: [],
-			// 					in: { $concatArrays: ['$$value', '$$this.permissions'] },
-			// 				},
-			// 			},
-			// 		},
-			// 	},
-			// 	{
-			// 		$project: {
-			// 			password: 0,
-			// 			refreshToken: 0,
-			// 			__v: 0,
-			// 		},
-			// 	},
-			// ]);
-
-			// const { permissions, ...profile } = result[0];
 
 			const profile = await Account.findOne({ _id }).select('-password -refreshToken');
 
@@ -359,15 +351,20 @@ class AccountsAPI {
 	// [POST] /accounts/login
 	/*
 		phone_number: String,
-        password: String,
+		password: String,
 	*/
 	async login(req, res, next) {
 		try {
 			const { phone_number, password } = req.body;
 
-			const account = await Account.findOne({ phone_number }).select('name password');
+			const account = await Account.findOne({ phone_number }).select('name password is_email_verified');
 			if (!account) {
 				next({ status: 400, msg: 'Account not found!' });
+				return;
+			}
+
+			if (!account.is_email_verified) {
+				next({ status: 400, msg: 'Account is not verified!' });
 				return;
 			}
 
@@ -445,10 +442,20 @@ class AccountsAPI {
 	*/
 	async register(req, res, next) {
 		try {
-			const { phone_number, password, passwordConfirm } = req.body;
+			const { phone_number, email, password, passwordConfirm } = req.body;
 
-			const accountExisted = await Account.findOne({ phone_number });
-			if (accountExisted) {
+			if (phone_number == '' || email == '' || password == '' || passwordConfirm === '') {
+				next({
+					status: 400,
+					msg: 'Empty input fields!',
+				});
+				return;
+			}
+
+			const emailExisted = await Account.findOne({ email });
+			const phoneExisted = await Account.findOne({ phone_number });
+
+			if (emailExisted || phoneExisted) {
 				next({ status: 400, msg: 'Account existed!' });
 				return;
 			}
@@ -473,7 +480,16 @@ class AccountsAPI {
 			const tokens = generateToken({ _id, name, type });
 			const { refreshToken } = tokens;
 			account.refreshToken = refreshToken;
+
 			await account.save();
+
+			const urlSend = `${process.env.APP_URL}/accounts/verify-email/${account._id}/${tokens.refreshToken}`;
+			const message = `
+				<p>Xác nhận email để hoàn tất đăng ký và tiến hành đăng nhập vào tài khoản của bạn.</p>
+				<p>Nhấn vào <a href="${urlSend}">đây</a> để tiếp tục.</p>
+			`;
+
+			await sendMail(account.email, 'Verify Email', message);
 
 			res.status(201).json({
 				msg: 'Insert account successfully!',
