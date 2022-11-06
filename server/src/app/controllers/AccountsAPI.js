@@ -357,7 +357,9 @@ class AccountsAPI {
 		try {
 			const { phone_number, password } = req.body;
 
-			const account = await Account.findOne({ phone_number }).select('name password is_email_verified');
+			const account = await Account.findOne({ phone_number }).select(
+				'name password type is_email_verified'
+			);
 			if (!account) {
 				next({ status: 400, msg: 'Account not found!' });
 				return;
@@ -383,6 +385,93 @@ class AccountsAPI {
 			res.status(200).json({
 				name,
 				tokens,
+			});
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+
+	// [POST] /accounts/forgot-password
+	async forgotPassword(req, res, next) {
+		try {
+			const { email } = req.body;
+
+			const user = await Account.findOne({ email });
+
+			if (!user) {
+				next({
+					status: 400,
+					msg: "User with given email doesn't exist",
+				});
+				return;
+			}
+
+			const { _id, name, type } = user;
+			const tokens = generateToken({ _id, name, type });
+			const { refreshToken } = tokens;
+			user.refreshToken = refreshToken;
+			await user.save();
+
+			const urlSend = `${process.env.APP_URL}/accounts/reset-password/${user._id}/${user.refreshToken}`;
+			const message = `
+				<p>Xác nhận email để lấy lại mật khẩu và tiến hành đăng nhập vào tài khoản của bạn.</p>
+				<p>Nhấn vào <a href="${urlSend}">đây</a> để tiếp tục.</p>
+			`;
+
+			await sendMail(email, 'Tipe_shop |Quên mật khẩu', message);
+
+			res.status(201).json({
+				msg: 'Password reset link sent to your email account!',
+			});
+		} catch (error) {
+			console.log(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+
+	// [POST] /accounts/reset-password
+	async resetPassword(req, res, next) {
+		try {
+			const { id, token } = req.params;
+			const { new_password, re_password } = req.body;
+
+			const user = await Account.findOne({
+				_id: id,
+				refreshToken: token,
+			}).select('name password type');
+
+			if (!user) {
+				next({
+					status: 400,
+					msg: 'Invalid link!',
+				});
+				return;
+			}
+
+			if (new_password === '' || re_password === '') {
+				next({ status: 500, msg: 'Password not sync!' });
+				return;
+			}
+
+			if (new_password !== re_password) {
+				next({
+					status: 400,
+					msg: 'new_password and re_password is not sync!',
+				});
+				return;
+			}
+
+			const saltRounds = 10;
+			const hashedPassword = await bcrypt.hash(new_password, saltRounds);
+
+			user.password = hashedPassword;
+
+			await user.save();
+
+			res.status(201).json({
+				msg: 'Reset account password successfully!',
+				user,
 			});
 		} catch (error) {
 			console.error(error);
@@ -489,7 +578,7 @@ class AccountsAPI {
 				<p>Nhấn vào <a href="${urlSend}">đây</a> để tiếp tục.</p>
 			`;
 
-			await sendMail(account.email, 'Verify Email', message);
+			await sendMail(account.email, 'Tipe_shop |Xác nhận tài khoản', message);
 
 			res.status(201).json({
 				msg: 'Insert account successfully!',

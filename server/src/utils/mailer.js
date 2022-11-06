@@ -23,7 +23,7 @@ const sendMail = async (to, subject, htmlContent) => {
 		};
 
 		await transport.sendMail(options);
-		console.log('email has send');
+		console.log(`Email has send to: ${to}`);
 	} catch (error) {
 		console.log('email not sent');
 		console.log(error);

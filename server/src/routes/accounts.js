@@ -16,6 +16,9 @@ router.post('/refreshToken', accountsAPI.refreshToken);
 router.post('/social/login', accountsAPI.socialLogin);
 router.post('/login', accountsAPI.login);
 router.post('/register', accountsAPI.register);
+router.post('/forgot-password', accountsAPI.forgotPassword);
+router.post('/reset-password/:id/:token', accountsAPI.resetPassword);
+
 router.post('/exist', accountsAPI.checkExist);
 router.post('/', upload(false).single('avatar_url'), verifyToken, accountsAPI.create);
 router.get('/profile', verifyToken, accountsAPI.getProfile);
