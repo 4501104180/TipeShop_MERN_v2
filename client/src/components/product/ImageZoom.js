@@ -122,7 +122,7 @@ const ImageZoom = ({ images, youtube }) => {
 				/>
 			)}
 			{isOpenLightboxYoutube && (
-				<div style={{ position: 'absolute', left: '200px', top: '200px' }}>
+				<div style={{ position: 'absolute', left: '197px', top: '197px' }}>
 					<button
 						style={{
 							position: 'absolute',
@@ -135,7 +135,7 @@ const ImageZoom = ({ images, youtube }) => {
 					>
 						<CloseIcon style={{ color: 'white' }} />
 					</button>
-					<ReactPlayer url={youtube} width={418} controls={true} muted={true} />
+					<ReactPlayer url={youtube} width={420} height={372} controls={true} muted={true} />
 				</div>
 			)}
 		</Fragment>
