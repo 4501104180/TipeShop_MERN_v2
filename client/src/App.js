@@ -1,5 +1,5 @@
 // components
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { LiveChat } from './components/live-chat';
 import { ScrollToTop } from './components/ScrollToTop';
 import Modal from './components/Modal';
@@ -14,14 +14,14 @@ import ThemeConfig from './theme';
 // utils
 import { SnackbarUtilsConfigurator } from './utils/snackbar';
 //Google Analytics
-import ReactGA from 'react-ga';
-const TRACKING_ID = 'UA-166801530-1';
+// import ReactGA from 'react-ga';
+// const TRACKING_ID = 'UA-166801530-1';
 
 const App = () => {
-	useEffect(() => {
-		ReactGA.initialize(TRACKING_ID);
-		ReactGA.pageview(window.location.pathname + window.location.search);
-	}, []);
+	// useEffect(() => {
+	// 	ReactGA.initialize(TRACKING_ID);
+	// 	ReactGA.pageview(window.location.pathname + window.location.search);
+	// }, []);
 	const { isInitialized } = useAuth();
 	return isInitialized ? (
 		<ThemeConfig>
