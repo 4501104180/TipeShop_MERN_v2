@@ -58,12 +58,15 @@ const ProductCard = ({ product }) => {
 					sx={{
 						borderRadius: '5px',
 						transition: '0.3s',
+						aspectRatio: "1/1",
+						display: "flex",
 						'&:hover': {
 							transform: 'scale(1.01)',
 						},
 					}}
 					sxImg={{
-						borderRadius: '5px',
+						margin: "auto",
+						objectFit: "cover",
 					}}
 				/>
 				<CardContent sx={{ height: '100px' }}>

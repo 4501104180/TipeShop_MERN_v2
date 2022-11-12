@@ -10,15 +10,19 @@ const propTypes = {
 };
 
 const ImageLoader = ({ sx, sxImg, src, alt, ...others }) => (
-	<RootStyle sx={sx} {...others}>
-		<LazyLoadImage alt={alt} src={src} effect="blur" width="100%" height="100%" style={sxImg} />
+	<RootStyle className='root-img' sx={sx} {...others}>
+		<LazyLoadImage alt={alt} src={src} effect="blur" width="100%" style={sxImg} />
 	</RootStyle>
 );
 
 const RootStyle = styled('div')({
 	position: 'relative',
 	overflow: 'hidden',
+	'& span': {
+		display: 'flex !important',
+	}
 });
+
 
 ImageLoader.propTypes = propTypes;
 

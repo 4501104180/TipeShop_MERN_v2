@@ -33,7 +33,7 @@ const columns: ColumnsType<Product> = [
   {
     title: 'Name',
     dataIndex: 'name',
-    render: (text) => <Text strong>{capitalize(text)}</Text>,
+    render: (text) => <Text strong style={{maxWidth:"10%"}}>{capitalize(text)}</Text>,
   },
   {
     title: 'Image',
