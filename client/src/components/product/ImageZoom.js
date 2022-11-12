@@ -122,7 +122,7 @@ const ImageZoom = ({ images, youtube }) => {
 				/>
 			)}
 			{isOpenLightboxYoutube && (
-				<div style={{ position: 'absolute', left: '197px', top: '197px' }}>
+				<LightBoxVideoStyle>
 					<button
 						style={{
 							position: 'absolute',
@@ -136,7 +136,7 @@ const ImageZoom = ({ images, youtube }) => {
 						<CloseIcon style={{ color: 'white' }} />
 					</button>
 					<ReactPlayer url={youtube} width={420} height={372} controls={true} muted={true} />
-				</div>
+				</LightBoxVideoStyle>
 			)}
 		</Fragment>
 	);
@@ -208,6 +208,17 @@ const ViewYoutube = styled(Typography)({
 	display: 'flex',
 	alignItems: 'center',
 });
+
+const LightBoxVideoStyle = styled('div')(({ theme }) => ({
+	position: 'absolute',
+	left: 'calc((100% - 1200px)/2 + 24px)',
+	top: '200px',
+	zIndex: '1000',
+	[theme.breakpoints.down('sm')]: {
+		left: '24px',
+		top: '200px',
+	},
+}));
 
 ImageZoom.propTypes = propTypes;
 
