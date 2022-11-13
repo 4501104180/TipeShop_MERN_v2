@@ -34,7 +34,7 @@ const columns: ColumnsType<Product> = [
     title: 'Name',
     dataIndex: 'name',
     width: '20%',
-    render: (text) => <Text style={{ wordBreak:"break-all"}}>{capitalize(text)}</Text>,
+    render: (text) => <Text style={{ wordBreak: 'break-all' }}>{capitalize(text)}</Text>,
   },
   {
     title: 'Image',

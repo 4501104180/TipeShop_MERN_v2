@@ -208,7 +208,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               <span>Please reload the page</span>
               <span>
                 If this problem does not go away,{' '}
-                <a href="https://www.facebook.com/exe.shiro">contact us</a>
+                <a href="https://www.facebook.com/TipeShop2022">contact us</a>
               </span>
             </Space>
           ),

@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import type { ColumnsType } from 'antd/es/table';
 import { Typography, Space, Table, Tag } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
@@ -119,7 +118,6 @@ const columns: ColumnsType<Order> = [
   },
 ];
 const OrderList = ({ actionsAllowed }: ActionsPassedGuardProps) => {
-  const navigate = useNavigate();
   const { openDrawer } = useDrawer();
   const { isLoading, orders } = useAppSelector(selectOrders);
 

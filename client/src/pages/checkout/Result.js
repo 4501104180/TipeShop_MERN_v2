@@ -41,7 +41,7 @@ const Result = () => {
 						</Link>
 					)}
 					{state?.statusCode !== 200 && (
-						<a href="https://www.facebook.com/exe.shiro">
+						<a href="https://www.facebook.com/TipeShop2022">
 							<Button color="error" variant="contained" size="small" disableElevation>
 								REPORT
 							</Button>

@@ -26,10 +26,10 @@ const HeaderTop = () => {
 			<Hidden width="mdDown">
 				<Stack direction="row" justifyContent="space-between">
 					<Stack direction="row" justifyContent="space-between">
-						<Linking component="a" href="https://www.facebook.com/exe.shiro" target="_blank">
+						<Linking component="a" href="https://www.facebook.com/TipeShop2022" target="_blank">
 							<i className="bi bi-file-arrow-down"></i> Download app
 						</Linking>
-						<Linking component="a" href="https://www.facebook.com/exe.shiro" target="_blank">
+						<Linking component="a" href="https://www.facebook.com/TipeShop2022" target="_blank">
 							<i className="bi bi-code-slash"></i> Connect
 						</Linking>
 					</Stack>
@@ -37,7 +37,7 @@ const HeaderTop = () => {
 						<Linking component={RouterLink} to={PATH_MAIN.news}>
 							<i className="bi bi-file-earmark-richtext"></i> News
 						</Linking>
-						<Linking component="a" href="https://www.facebook.com/exe.shiro" target="_blank">
+						<Linking component="a" href="https://www.facebook.com/TipeShop2022" target="_blank">
 							<i className="bi bi-question-circle"></i> Support
 						</Linking>
 						{isAuthenticated && profile ? (

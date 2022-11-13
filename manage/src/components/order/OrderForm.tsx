@@ -31,7 +31,7 @@ export interface OrderFormProps {
 function OrderForm({ order }: OrderFormProps) {
   const index: number = 0;
   const sliceDispatch = useAppDispatch();
-  const { isLoading, error, lastAction } = useAppSelector(selectOrders);
+  const { isLoading, lastAction } = useAppSelector(selectOrders);
   const { closeDrawer } = useDrawer();
   const [form] = Form.useForm();
   useEffect(() => {

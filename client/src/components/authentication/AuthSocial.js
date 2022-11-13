@@ -111,7 +111,7 @@ const AuthSocial = ({ handleBackDefaultState, socialLogin, closeModal }) => {
 			</Stack>
 			<Typography variant="caption">
 				By continuing, you accept the &nbsp;
-				<Link href="https://www.facebook.com/exe.shiro" target="_blank">
+				<Link href="https://www.facebook.com/TipeShop2022" target="_blank">
 					terms of use
 				</Link>
 			</Typography>

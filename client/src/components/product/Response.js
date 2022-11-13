@@ -9,7 +9,7 @@ const Response = () => (
 	<Stack direction="row">
 		<Hidden width="mdDown">
 			<Avatar
-				name="Lê Chính Tuệ"
+				name="Administrators"
 				src="http://dotshop69.000webhostapp.com/Public/images/tue.png"
 				sx={{ width: '50px', height: '50px' }}
 			/>
@@ -18,17 +18,17 @@ const Response = () => (
 			<Stack direction="row" alignItems="center" spacing={1}>
 				<Hidden width="mdUp">
 					<Avatar
-						name="Lê Chính Tuệ"
+						name="Administrators"
 						src="http://dotshop69.000webhostapp.com/Public/images/tue.png"
 						sx={{ width: '20px', height: '20px' }}
 					/>
 				</Hidden>
-				<Typography variant="subtitle2">Lê Chính Tuệ</Typography>
-				<Typography variant="caption">12 tháng 03 năm 2021</Typography>
+				<Typography variant="subtitle2">Administrators</Typography>
+				<Typography variant="caption">March 12, 2021</Typography>
 			</Stack>
 			<Typography variant="subtitle1">
-				Bạn ơi, cho mình hỏi lúc vẽ màn hình của bản vẽ có hiện hình không ạ? Hay chỉ có màn hình laptop
-				hiện hình ảnh thôi?
+				Friend, can I ask if the screen of the drawing shows up when drawing? Or is it only the laptop
+				screen that shows the image?
 			</Typography>
 		</Message>
 	</Stack>

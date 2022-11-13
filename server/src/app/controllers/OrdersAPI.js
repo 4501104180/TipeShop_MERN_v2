@@ -35,7 +35,6 @@ class OrdersAPI {
 		try {
 			let { _id } = req.params;
 			_id = mongoose.Types.ObjectId(_id);
-			console.log(_id);
 			const order = await Order.findOne({
 				_id,
 			});
@@ -91,10 +90,8 @@ class OrdersAPI {
 		try {
 			let customer_id = req.account._id;
 			customer_id = mongoose.Types.ObjectId(customer_id);
-			console.log(customer_id);
 			let { _id } = req.params;
 			_id = mongoose.Types.ObjectId(_id);
-			console.log(_id);
 			const order = await Order.findOne({
 				_id,
 				customer_id,

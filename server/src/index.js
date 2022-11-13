@@ -18,6 +18,10 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
 	cors: {
 		origin: corsConfig.whiteList,
+		// origin: '*',
+		// methods: ['GET', 'POST'],
+		// allowedHeaders: ['my-custom-header'],
+		// credentials: true,
 	},
 });
 const PORT = process.env.PORT || 5000;
