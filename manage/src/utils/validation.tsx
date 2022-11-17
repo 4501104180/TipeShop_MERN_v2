@@ -7,8 +7,17 @@ export const createAccountValidation = yup.object().shape({
     .required('Phone number is required!')
     .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/, 'Invalid phone number!'),
   name: yup.string().required('Name is required!'),
-  password: yup.string().required('Password is required!'),
-  passwordConfirm: yup.string().required('Confirm is required!'),
+  password: yup
+    .string()
+    .required('Password is required!')
+    .min(6, 'Password is too short - should be 6 chars minimum.')
+    .max(15, 'The password is too long - the maximum should be 15 characters.'),
+  passwordConfirm: yup
+    .string()
+    .required('Confirm is required!')
+    .min(6, 'Password is too short - should be 6 chars minimum.')
+    .max(15, 'The password is too long - the maximum should be 15 characters.')
+    .oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
 export const updateAccountValidation = yup.object().shape({
