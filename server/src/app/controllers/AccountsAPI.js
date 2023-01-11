@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const path = require('path');
 
 // models
 const { Types, Account, Customer, Administrator } = require('../models/Account');
@@ -9,6 +10,7 @@ const Location = require('../models/Location');
 const cloudinaryUpload = require('../../utils/cloudinaryUpload');
 const { generateToken, verify } = require('../../utils/jwt');
 const { capitalize } = require('../../utils/formatString');
+const sendMail = require('../../utils/mailer');
 
 class AccountsAPI {
 	// [GET] /accounts/:type
@@ -48,51 +50,41 @@ class AccountsAPI {
 		}
 	}
 
+	// [GET] /accounts/verify-email/:id/:token
+	async verifyEmail(req, res, next) {
+		try {
+			const { id, token } = req.params;
+			const user = await Account.findOne({
+				id: id,
+				refreshToken: token,
+			});
+
+			if (!user) {
+				next({
+					status: 400,
+					msg: 'Invalid link!',
+				});
+				return;
+			}
+
+			user.is_email_verified = true;
+			await user
+				.save()
+				.then(() => {
+					res.redirect(`${process.env.APP_CLIENT}`);
+				})
+				.catch((err) => console.log(error));
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+
 	// [GET] /accounts/profile
 	async getProfile(req, res, next) {
 		try {
 			let { _id } = req.account;
 			_id = mongoose.Types.ObjectId(_id);
-
-			// const result = await Account.aggregate([
-			// 	{
-			// 		$match: { _id },
-			// 	},
-			// 	{
-			// 		$lookup: {
-			// 			from: 'roles',
-			// 			let: {
-			// 				roles: '$roles',
-			// 			},
-			// 			pipeline: [
-			// 				{
-			// 					$match: { $expr: { $in: ['$name', '$$roles'] } },
-			// 				},
-			// 			],
-			// 			as: 'roles',
-			// 		},
-			// 	},
-			// 	{
-			// 		$addFields: {
-			// 			permissions: {
-			// 				$reduce: {
-			// 					input: '$roles',
-			// 					initialValue: [],
-			// 					in: { $concatArrays: ['$$value', '$$this.permissions'] },
-			// 				},
-			// 			},
-			// 		},
-			// 	},
-			// 	{
-			// 		$project: {
-			// 			password: 0,
-			// 			refreshToken: 0,
-			// 			__v: 0,
-			// 		},
-			// 	},
-			// ]);
-
-			// const { permissions, ...profile } = result[0];
 
 			const profile = await Account.findOne({ _id }).select('-password -refreshToken');
 
@@ -359,15 +351,22 @@ class AccountsAPI {
 	// [POST] /accounts/login
 	/*
 		phone_number: String,
-        password: String,
+		password: String,
 	*/
 	async login(req, res, next) {
 		try {
 			const { phone_number, password } = req.body;
 
-			const account = await Account.findOne({ phone_number }).select('name password');
+			const account = await Account.findOne({ phone_number }).select(
+				'name password type is_email_verified'
+			);
 			if (!account) {
 				next({ status: 400, msg: 'Account not found!' });
+				return;
+			}
+
+			if (!account.is_email_verified) {
+				next({ status: 400, msg: 'Account is not verified!' });
 				return;
 			}
 
@@ -386,6 +385,93 @@ class AccountsAPI {
 			res.status(200).json({
 				name,
 				tokens,
+			});
+		} catch (error) {
+			console.error(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+
+	// [POST] /accounts/forgot-password
+	async forgotPassword(req, res, next) {
+		try {
+			const { email } = req.body;
+
+			const user = await Account.findOne({ email });
+
+			if (!user) {
+				next({
+					status: 400,
+					msg: "User with given email doesn't exist",
+				});
+				return;
+			}
+
+			const { _id, name, type } = user;
+			const tokens = generateToken({ _id, name, type });
+			const { refreshToken } = tokens;
+			user.refreshToken = refreshToken;
+			await user.save();
+
+			const urlSend = `${process.env.APP_URL}/accounts/reset-password/${user._id}/${user.refreshToken}`;
+			const message = `
+				<p>Xác nhận email để lấy lại mật khẩu và tiến hành đăng nhập vào tài khoản của bạn.</p>
+				<p>Nhấn vào <a href="${urlSend}">đây</a> để tiếp tục.</p>
+			`;
+
+			await sendMail(email, 'Tipe_shop |Quên mật khẩu', message);
+
+			res.status(201).json({
+				msg: 'Password reset link sent to your email account!',
+			});
+		} catch (error) {
+			console.log(error);
+			next({ status: 500, msg: error.message });
+		}
+	}
+
+	// [POST] /accounts/reset-password
+	async resetPassword(req, res, next) {
+		try {
+			const { id, token } = req.params;
+			const { new_password, re_password } = req.body;
+
+			const user = await Account.findOne({
+				_id: id,
+				refreshToken: token,
+			}).select('name password type');
+
+			if (!user) {
+				next({
+					status: 400,
+					msg: 'Invalid link!',
+				});
+				return;
+			}
+
+			if (new_password === '' || re_password === '') {
+				next({ status: 500, msg: 'Password not sync!' });
+				return;
+			}
+
+			if (new_password !== re_password) {
+				next({
+					status: 400,
+					msg: 'new_password and re_password is not sync!',
+				});
+				return;
+			}
+
+			const saltRounds = 10;
+			const hashedPassword = await bcrypt.hash(new_password, saltRounds);
+
+			user.password = hashedPassword;
+
+			await user.save();
+
+			res.status(201).json({
+				msg: 'Reset account password successfully!',
+				user,
 			});
 		} catch (error) {
 			console.error(error);
@@ -445,10 +531,20 @@ class AccountsAPI {
 	*/
 	async register(req, res, next) {
 		try {
-			const { phone_number, password, passwordConfirm } = req.body;
+			const { phone_number, email, password, passwordConfirm } = req.body;
 
-			const accountExisted = await Account.findOne({ phone_number });
-			if (accountExisted) {
+			if (phone_number == '' || email == '' || password == '' || passwordConfirm === '') {
+				next({
+					status: 400,
+					msg: 'Empty input fields!',
+				});
+				return;
+			}
+
+			const emailExisted = await Account.findOne({ email });
+			const phoneExisted = await Account.findOne({ phone_number });
+
+			if (emailExisted || phoneExisted) {
 				next({ status: 400, msg: 'Account existed!' });
 				return;
 			}
@@ -473,7 +569,16 @@ class AccountsAPI {
 			const tokens = generateToken({ _id, name, type });
 			const { refreshToken } = tokens;
 			account.refreshToken = refreshToken;
+
 			await account.save();
+
+			const urlSend = `${process.env.APP_URL}/accounts/verify-email/${account._id}/${tokens.refreshToken}`;
+			const message = `
+				<p>Xác nhận email để hoàn tất đăng ký và tiến hành đăng nhập vào tài khoản của bạn.</p>
+				<p>Nhấn vào <a href="${urlSend}">đây</a> để tiếp tục.</p>
+			`;
+
+			await sendMail(account.email, 'Tipe_shop |Xác nhận tài khoản', message);
 
 			res.status(201).json({
 				msg: 'Insert account successfully!',
