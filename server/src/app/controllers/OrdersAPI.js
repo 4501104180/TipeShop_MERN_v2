@@ -11,16 +11,20 @@ class OrdersAPI {
 	// [GET] /orders/all
 	async findAllOrders(req, res, next) {
 		try {
-			const orders = await Order.find().select([
-				'_id',
-				'customer_id',
-				'shipping_address',
-				'payment_method',
-				'items',
-				'price_summary',
-				'tracking_infor',
-				'note',
-			]);
+			const orders = await Order.find()
+				.sort({
+					createdAt: -1,
+				})
+				.select([
+					'_id',
+					'customer_id',
+					'shipping_address',
+					'payment_method',
+					'items',
+					'price_summary',
+					'tracking_infor',
+					'note',
+				]);
 
 			res.status(200).json({
 				data: orders,
